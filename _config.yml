@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: ruizhi's blog
 subtitle: ''
-description: ''
-keywords:
-author: John Doe
+description: 'Not everything that counts can be counted and not everything counted truly counts'
+keywords: 
+author: ruizhi
 language: en
 timezone: ''
 
@@ -33,17 +33,17 @@ skip_render:
 # Writing
 new_post_name: :title.md # File name of new posts
 default_layout: post
-titlecase: false # Transform title into titlecase
+titlecase: true # Transform title into titlecase
 external_link:
   enable: true # Open external links in new tab
   field: site # Apply to the whole site
   exclude: ''
 filename_case: 0
 render_drafts: false
-post_asset_folder: false
+post_asset_folder: true
 relative_link: false
 future: true
-syntax_highlighter: highlight.js
+syntax_highlighter: 
 highlight:
   line_number: true
   auto_detect: false
@@ -61,18 +61,23 @@ prismjs:
 # order_by: Posts order. (Order by date descending by default)
 index_generator:
   path: ''
-  per_page: 10
+  per_page: 5
   order_by: -date
 
 # Category & Tag
-default_category: uncategorized
+default_category: java
 category_map:
 tag_map:
 
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 meta_generator: true
-
+archive_generator:
+    enabled: true
+    per_page: 0
+    yearly: false
+    monthly: false
+    daily: false
 # Date / Time format
 ## Hexo uses Moment.js to parse and display date
 ## You can customize the date format as defined in
@@ -96,8 +101,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
-
+theme: particlex  # 指定主题
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
