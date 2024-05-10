@@ -3,10 +3,11 @@ title: ThreadLocal小结
 date: 2024-04-30 14:26:21
 tags: 
   - juc
-  - java基础
 categories:	
   - 后端开发
 ---
+
+
 
 # ThreadLocal
 
@@ -18,6 +19,8 @@ public class ThreadLocal<T> {
     ...
 }
 ```
+
+<!-- more -->
 
 ## 简单示例
 

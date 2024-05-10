@@ -5,10 +5,10 @@
 # Site
 title: ruizhi's blog
 subtitle: ''
-description: 'Not everything that counts can be counted and not everything counted truly counts'
+description: ''
 keywords: 
 author: ruizhi
-language: en
+language: zh-CN
 timezone: ''
 
 # URL
@@ -101,7 +101,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: particlex  # 指定主题
+theme: next  # 指定主题
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:

@@ -1,9 +1,30 @@
 ---
-title: Spring自动装配原理
+title: SpringBoot自动装配原理
 date: 2024-04-22 21:25:01
 tags: Spring
-categories: java开发
+categories: 后端开发
 ---
+
+SpringBoot自动装配 = 模块装配 + 条件装配
+
+`@SpringBootApplication`上标注了`@EnableAutoConfiguration`，这自动装配的起点。
+
+1. 导入starter及Spring运行需要的类
+
+   - `@EnableAutoConfiguration `上标注了`@Import(AutoConfigurationImportSelector.class)`
+
+   - 根据模块装配规则`AutoConfigurationImportSelector`的父类实现了`ImportSelector`接口，重写了`selectImports()`方法。
+   - Spring内部通过层层过滤，最终委托给`SpringFactoriesLoader`中`loadFactoryNames()`方法来调用`loadSpringFactories()`，并过滤返回值key是`EnableAutoConfiguration`的value
+   - `loadSpringFactories()`方法会解析资源目录下"META-INF/spring.factories"文件，并将数据封装成Map类型
+   - 之后将得到的数据层层返回上去，在selectImports()返回要加载的类名（也就是META-INF/spring.factories文件中定义的EnableAutoConfiguration的类）
+
+2. 导入自己编写的Bean
+   - `@AutoConfigurationPackage`上标注了`@Import(AutoConfigurationPackages.Registrar.class)`
+   - 根据模块装配规则``AutoConfigurationPackages.Registrar`实现了`ImportBeanDefinitionRegistrar`接口，重写了`registerBeanDefinitions()`方法。
+   - `registerBeanDefinitions()`会调用`register()`方法来注册`PackageImports`中封装的包名
+   - `PackageImports`会解析是否配置需要扫描的包名，默认是启动类所在包
+
+<!-- more -->
 
 # 1. Spring中的装配
 
@@ -100,7 +121,7 @@ public class WebTestApplication {
 
 成功打印出了User
 
-<img src="F:\Blog\source\_posts\Spring自动装配原理\模块装配方式一.png" alt="模块装配方式一" style="zoom:80%;" />
+<img src="./Spring自动装配原理/模块装配方式一.png" alt="模块装配方式一" style="zoom:80%;" />
 
 ### 2. Configuration (导入配置类)
 
@@ -144,7 +165,7 @@ public class WebTestApplication {
 }
 ```
 
-<img src="F:\Blog\source\_posts\Spring自动装配原理\模块装配二.png" alt="模块装配二" style="zoom:80%;" />
+<img src="./Spring自动装配原理/模块装配二.png" alt="模块装配二" style="zoom:80%;" />
 
 ### 3. ImportSelector（导入Selector）
 
@@ -249,7 +270,7 @@ public interface Condition {
 
 到这里我们可以想到，所有衍生出的注解都是根据匹配规则实现了自己`matches()`方法。
 
-看看``ConditionalOnMissingBean`验证下想法
+看看`ConditionalOnMissingBean`验证下想法
 
 ```java
 @Target({ElementType.TYPE, ElementType.METHOD})
@@ -407,7 +428,7 @@ public class ImportConfiguration {
 }
 ```
 
-# 2. Spring自动装配
+# 2. SpringBoot自动装配
 
 点开注解`@SpringBootApplication`，你会发现上面标注了一个`@EnableAutoConfiguration`（允许自动装配）
 
@@ -625,7 +646,7 @@ private static final class PackageImports {
 	}
 ```
 
-**总结**：
+# 3. 总结
 
 `@SpringBootApplication`上标注了`@EnableAutoConfiguration`，这自动装配的起点。
 
@@ -633,8 +654,8 @@ private static final class PackageImports {
 
    - `@EnableAutoConfiguration `上标注了`@Import(AutoConfigurationImportSelector.class)`
 
-   - 根据模块装配规则``AutoConfigurationImportSelector`父类实现了`ImportSelector`接口，重写了`selectImports()`方法。
-   - Spring内部通过层层过滤，最终调用了`SpringFactoriesLoader`中`loadFactoryNames()`方法来调用`loadSpringFactories()`，并过滤返回值Map中key是`EnableAutoConfiguration`的value
+   - 根据模块装配规则`AutoConfigurationImportSelector`的父类实现了`ImportSelector`接口，重写了`selectImports()`方法。
+   - Spring内部通过层层过滤，最终委托给`SpringFactoriesLoader`中`loadFactoryNames()`方法来调用`loadSpringFactories()`，并过滤返回值key是`EnableAutoConfiguration`的value
    - `loadSpringFactories()`方法会解析资源目录下"META-INF/spring.factories"文件，并将数据封装成Map类型
    - 之后将得到的数据层层返回上去，在selectImports()返回要加载的类名（也就是META-INF/spring.factories文件中定义的EnableAutoConfiguration的类）
 

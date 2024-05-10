@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "hexo": "^7.0.0",
+    "hexo-asset-image": "github:CodeFalling/hexo-asset-image",
     "hexo-generator-archive": "^2.0.0",
     "hexo-generator-category": "^2.0.0",
     "hexo-generator-index": "^3.0.0",
@@ -24,6 +25,9 @@
     "hexo-server": "^3.0.0",
     "hexo-theme-butterfly": "^4.13.0",
     "hexo-theme-fluid": "^1.9.7",
-    "hexo-theme-landscape": "^1.0.0"
+    "hexo-theme-landscape": "^1.0.0",
+    "hexo-theme-next": "^8.20.0",
+    "hexo-word-counter": "^0.2.0",
+    "hexo-wordcount": "^6.0.1"
   }
 }
