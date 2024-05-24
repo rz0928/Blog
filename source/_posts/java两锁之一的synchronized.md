@@ -248,7 +248,7 @@ ObjectMonitor() {
 }
 ```
 
-每个对象都会关联一个ObjectMonitor，java通过ObjectMonitor来管理重量级锁。
+每个对象都会关联一个ObjectMonitor，java通过ObjectMonitor来管理锁（只要有synchronized就离不开ObjectMonitor）。
 
 <img src="java两锁之一的synchronized\java重量级锁.webp" alt="java重量级锁" style="zoom:80%;" />
 
