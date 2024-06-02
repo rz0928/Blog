@@ -428,6 +428,11 @@ public class ImportConfiguration {
 }
 ```
 
+### 小结
+
+- `@Conditional`主要是用来让用户能根据具体业务场景自己配置或者自定义Bean来满足需求
+- `@Profile`主要是为了针对不同的环境提供不同的Bean（本地测试与线上生产环境的日志打印路径、数据库等组件使用肯定不同）
+
 # 2. SpringBoot自动装配
 
 点开注解`@SpringBootApplication`，你会发现上面标注了一个`@EnableAutoConfiguration`（允许自动装配）
