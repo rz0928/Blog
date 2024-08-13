@@ -1,6 +1,17 @@
+---
+title: SpringBoot参数校验
+date: 2024-08-13 23:56:00
+tags:
+   - SpringBoot
+categories:
+   - 后端开发
+---
+
 # 1. 参数校验
 
 ## 1.1 Spring参数校验快速开始
+
+
 
 ### 1.1.1 导入依赖
 
@@ -184,7 +195,6 @@ import javax.validation.Valid;
 ### 1.3.2 定义区别
 
 ```java
-
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -460,7 +470,7 @@ public class SpringValidatorAdapter implements SmartValidator, javax.validation.
 
 **SpringValidtorAdapter的结构**
 
-![image-20240602190311638](.\参数校验\\image-20240602190311638.png)
+![image-20240602190311638](F:/Blog/source/_posts/SpringBoot参数校验/image-20240602190311638.png)
 
 根据上面结构图和代码，可以看到`SpringValidatorAdapter`实现了两个不同的`validator`接口，针对其中核心方法`validate()`进行了返回值的适配（有点像`Runnable`和` Callable`之间的适配）
 
