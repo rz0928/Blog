@@ -1,7 +1,7 @@
 ---
 title: SpringBoot自动装配原理
 date: 2024-04-22 21:25:01
-tags: Spring
+tags: SpringBoot
 categories: 后端开发
 ---
 
