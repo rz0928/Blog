@@ -7,11 +7,13 @@ categories:
    - 后端开发
 ---
 
+**spring-boot-starter-validation**相关的参数校验
+
+<!--more-->
+
 # 1. 参数校验
 
 ## 1.1 Spring参数校验快速开始
-
-
 
 ### 1.1.1 导入依赖
 
