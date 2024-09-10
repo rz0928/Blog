@@ -3,7 +3,7 @@ title: SpringBoot日志基础
 date: 2024-09-03 16:09:34
 tags:
   - SpringBoot
-  - 日志打印
+  - 日志
 categories
   - 后端开发 
 ---
