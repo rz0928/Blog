@@ -1,5 +1,5 @@
 ---
-title: java两锁之一的synchronized
+title: synchronized解析
 date: 2024-05-08 09:02:00
 tags:
    - java锁
@@ -17,7 +17,7 @@ categories:
 
 一般来说解决问题就是需要破坏三个条件中的一个，锁就是将多线程访问变量的过程串行化，破坏多线程环境。另外还可以通过创建副本的方法来破坏第二个条件，lua脚本将多个redis操作合并成原子操作破坏第三个条件。
 
-java中锁的实现有两种，分别是基于`Monitor`的`synchronized`和基于`AQS`的`ReentrantLock`，这篇文章先来总结一下synchronized的使用与实现
+java中锁的实现大体分两种，分别是基于`Monitor`的`synchronized`和基于`AQS`的`ReentrantLock`，这篇文章先来总结一下synchronized的使用与实现
 
 <!--more-->
 

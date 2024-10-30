@@ -324,9 +324,7 @@ public class InitializationTest1 {
 
 ### 卸载
 
-
-
-
+类的垃圾回收过程
 
 ## 3.2 双亲委派机制
 

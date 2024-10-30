@@ -290,7 +290,7 @@ public RandomAccessFile(File file, String mode) throws FileNotFoundException{...
 
 ## RandomAccessFile实现断点续传
 
-# //todo
+ //todo
 
 # 2. IO模型（Unix）
 
@@ -688,6 +688,4 @@ Reactor部分分为mainReactor与subReactor
 2. **subReactor**
 
    subReactor使用一个线程池作为支撑，用多线程来处理网络读写和数据处理
-
-Reactor是根据`java.nio`包中的api提出的一套IO模型
 
