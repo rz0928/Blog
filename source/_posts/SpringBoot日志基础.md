@@ -2,8 +2,7 @@
 title: SpringBoot日志基础
 date: 2024-09-03 16:09:34
 tags:
-  - SpringBoot
-  - 日志
+  - SpringBoot日志
 categories
   - 后端开发 
 ---
