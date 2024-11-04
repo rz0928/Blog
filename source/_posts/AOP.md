@@ -12,6 +12,8 @@ Spring AOP的实现原理
 - jdk动态代理
 - cglib动态代理
 
+<!--more-->
+
 # 1. AOP基础
 
 ## 1.1 动态代理
