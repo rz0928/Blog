@@ -7,8 +7,6 @@ categories:
   - 后端开发
 ---
 
-
-
 # ThreadLocal
 
 ThreadLocal主要是为了解决多线程间信息隔离的问题（创建副本，用空间换时间）。
