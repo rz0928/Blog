@@ -288,7 +288,7 @@ class MyThread extends Thread {
 }
 ```
 
-### 2.2.4 常见问题
+### 2.2.4 LockSupport与wait/notify对比
 
 LockSupport与Object中wait()和notify()区别
 
@@ -296,9 +296,11 @@ LockSupport与Object中wait()和notify()区别
 
 2. **功能不同**
 
-   - LockSupport更加灵活，可以先unpark()再park()。Object是等待唤醒机制，只能先wait再notify()。
+   - LockSupport更加灵活，可以先unpark()再park()，不过许可最多只有一个。Object是等待唤醒机制，只能先wait再notify()。
 
    - Object中wait()会释放资源并加入队列，LockSupport中park()只会一直阻塞（释放资源交给Condition await实现）
+
+### 2..2.5 CLH公平队列
 
 
 
