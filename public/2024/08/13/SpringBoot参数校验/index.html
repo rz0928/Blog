@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ruizhihut.top","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="spring-boot-starter-validation相关的参数校验">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot参数校验">
+<meta property="og:url" content="https://ruizhihut.top/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/index.html">
+<meta property="og:site_name" content="ruizhi&#39;s Blog">
+<meta property="og:description" content="spring-boot-starter-validation相关的参数校验">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ruizhihut.top/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/Blog/source/_posts/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/image-20240602190311638.png">
+<meta property="article:published_time" content="2024-08-13T15:56:00.000Z">
+<meta property="article:modified_time" content="2024-09-03T02:40:15.063Z">
+<meta property="article:author" content="ruizhi">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ruizhihut.top/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/Blog/source/_posts/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/image-20240602190311638.png">
+
+
+<link rel="canonical" href="https://ruizhihut.top/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ruizhihut.top/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/","path":"2024/08/13/SpringBoot参数校验/","title":"SpringBoot参数校验"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SpringBoot参数校验 | ruizhi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ruizhi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C"><span class="nav-text">1. 参数校验</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-Spring%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B"><span class="nav-text">1.1 Spring参数校验快速开始</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-1-%E5%AF%BC%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-text">1.1.1 导入依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-2-%E4%BD%BF%E7%94%A8"><span class="nav-text">1.1.2 使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E5%B8%B8%E7%94%A8%E7%9A%84%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3"><span class="nav-text">1.2 常用的校验注解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-Vaild%E4%B8%8E-Vaildated"><span class="nav-text">1.3 @Vaild与@Vaildated</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-1-%E6%9D%A5%E6%BA%90"><span class="nav-text">1.3.1 来源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-2-%E5%AE%9A%E4%B9%89%E5%8C%BA%E5%88%AB"><span class="nav-text">1.3.2 定义区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-3-%E5%8A%9F%E8%83%BD%E5%B7%AE%E5%BC%82"><span class="nav-text">1.3.3 功能差异</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E6%A0%A1%E9%AA%8C"><span class="nav-text">嵌套校验</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C"><span class="nav-text">分组校验</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3-Valid%E4%B8%8E-Validated"><span class="nav-text">2. 深入理解@Valid与@Validated</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-SpringValidtorAdapter"><span class="nav-text">2.1 SpringValidtorAdapter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E5%85%B7%E4%BD%93%E6%A0%A1%E9%AA%8C%E5%99%A8%E7%9A%84%E8%8E%B7%E5%8F%96%E5%AE%9E%E7%8E%B0"><span class="nav-text">2.2 具体校验器的获取实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-ValidatorFactory"><span class="nav-text">2.2.1 ValidatorFactory</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LocalValidatorFactoryBean"><span class="nav-text">LocalValidatorFactoryBean</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ValidatorFactoryImpl"><span class="nav-text">ValidatorFactoryImpl</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-ValidatorImpl"><span class="nav-text">2.2.2 ValidatorImpl</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF"><span class="nav-text">3. 异常信息</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E8%AF%B4%E6%98%8E"><span class="nav-text">3.1 说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-BindException"><span class="nav-text">3.2 BindException</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-BindResult"><span class="nav-text">3.2.1 BindResult</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-AbstractBindingResult"><span class="nav-text">3.2.2 AbstractBindingResult</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ObjectError"><span class="nav-text">ObjectError</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ruizhi"
+      src="/images/cat1.jpg">
+  <p class="site-author-name" itemprop="name">ruizhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rz0928" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rz0928" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ruizhi0928@gmail.com" title="E-Mail → mailto:ruizhi0928@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ruizhihut.top/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/cat1.jpg">
+      <meta itemprop="name" content="ruizhi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SpringBoot参数校验 | ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SpringBoot参数校验
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-09-03 10:40:15" itemprop="dateModified" datetime="2024-09-03T10:40:15+08:00">2024-09-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>3.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>12 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><strong>spring-boot-starter-validation</strong>相关的参数校验</p>
+<span id="more"></span>
+
+<h1 id="1-参数校验"><a href="#1-参数校验" class="headerlink" title="1. 参数校验"></a>1. 参数校验</h1><h2 id="1-1-Spring参数校验快速开始"><a href="#1-1-Spring参数校验快速开始" class="headerlink" title="1.1 Spring参数校验快速开始"></a>1.1 Spring参数校验快速开始</h2><h3 id="1-1-1-导入依赖"><a href="#1-1-1-导入依赖" class="headerlink" title="1.1.1 导入依赖"></a>1.1.1 导入依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-validation<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-1-2-使用"><a href="#1-1-2-使用" class="headerlink" title="1.1.2 使用"></a>1.1.2 使用</h3><p>参数校验实操分两步</p>
+<ul>
+<li>在Controller层将要校验的参数上标注<code>@Vaild</code>注解</li>
+<li>在要校验对象属性加上具体的约束</li>
+</ul>
+<p><strong>例子</strong>：</p>
+<ol>
+<li><p>我要校验登录的用户名和密码不能为空，那么我就在参数loginUserDTO前加上<code>@valid</code>注解。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">testVaildController</span> &#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">public</span> LoginService loginService;</span><br><span class="line">    <span class="meta">@PostMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> ResponseResult <span class="title function_">login</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Valid</span> LoginUserDTO loginUserDTO)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseResult.success(loginService.login(loginUserDTO.getUserName(),loginUserDTO.getPassword()));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后在LoginUserDTO类中加上具体的约束</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoginUserDTO</span> &#123;</span><br><span class="line">   <span class="meta">@NotBlank(message = &quot;用户名不能为空&quot;)</span></span><br><span class="line">   <span class="keyword">private</span> <span class="type">String</span> <span class="variable">userName</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">   <span class="meta">@NotBlank(message = &quot;密码不能为空&quot;)</span></span><br><span class="line">   <span class="keyword">private</span> <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">getUserName</span><span class="params">()</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">this</span>.userName;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUserName</span><span class="params">(String userName)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.userName = userName;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">getPassword</span><span class="params">()</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">this</span>.password;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPassword</span><span class="params">(String password)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.password = password;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样参数校验就可以生效了，测试接口结果如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;timestamp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2024-05-24T09:15:58.364+00:00&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;status&quot;</span><span class="punctuation">:</span> <span class="number">400</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Bad Request&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/login&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>异常捕获</p>
+<p>为了<strong>更有效的传递信息</strong>以及进行<strong>结果统一返回</strong>、<strong>日志记录</strong>等操作，我们通常会定义异常处理器来统一处理参数校验的异常（BindException是什么见下文异常信息）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GlobalExceptionHandler</span> &#123;</span><br><span class="line">    <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(<span class="string">&quot;GlobalExceptionHandler&quot;</span>);</span><br><span class="line">    <span class="comment">//抛出的异常是MethodArgumentNotValidException,BindException是它的父类</span></span><br><span class="line">    <span class="meta">@ExceptionHandler(BindException.class)</span></span><br><span class="line">    <span class="keyword">public</span> ResponseResult <span class="title function_">bindExceptionHandler</span><span class="params">(BindException e)</span> &#123;</span><br><span class="line">        <span class="comment">//具体返回什么据情况而定，这里直接返回所有defalutMessage(写在约束注解里的信息)了</span></span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">        <span class="type">BindingResult</span> <span class="variable">bindingResult</span> <span class="operator">=</span> e.getBindingResult();</span><br><span class="line">        <span class="keyword">for</span> (ObjectError objectError : bindingResult.getAllErrors()) &#123;</span><br><span class="line">            <span class="type">FieldError</span> <span class="variable">fieldError</span> <span class="operator">=</span> (FieldError) objectError;</span><br><span class="line">            <span class="comment">//这里直接使用默认appender打印日志在控制台了，真实线上可以同步到本地、ELK等地方</span></span><br><span class="line">            logger.error(<span class="string">&quot;参数 &#123;&#125; ,&#123;&#125; 校验错误：&#123;&#125;&quot;</span>, fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage());</span><br><span class="line">            list.add(fieldError.getDefaultMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ResponseResult.error(AppHttpCodeEnum.SYSTEM_ERROR.getCode(),list.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>测试数据与结果如下</strong>:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;userName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">500</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;[用户名不能为空, 密码不能为空]&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="1-2-常用的校验注解"><a href="#1-2-常用的校验注解" class="headerlink" title="1.2 常用的校验注解"></a>1.2 常用的校验注解</h2><ol>
+<li><p><strong>控制检查</strong></p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@NotBlank</code></td>
+<td>用于字符串，字符串不能为null也不能为空</td>
+</tr>
+<tr>
+<td><code>@NotEmpty</code></td>
+<td>字符串同上，集合不能为空，必须有元素</td>
+</tr>
+<tr>
+<td><code>@NotNull</code></td>
+<td>不能为null</td>
+</tr>
+<tr>
+<td><code>@Null</code></td>
+<td>必须为null</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>数值检查</strong></p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@DecimalMax(value)</code></td>
+<td>被标注元素必须是数字，必须小于等于value</td>
+</tr>
+<tr>
+<td><code>@DecimalMin(value)</code></td>
+<td>被标注元素必须是数字，必须大于等于value</td>
+</tr>
+<tr>
+<td><code>@Digits(integer,fraction)</code></td>
+<td>被标注的元素必须为数字，其值的整数部分精度为 <code>integer</code>，小数部分精度为 <code>fraction</code></td>
+</tr>
+<tr>
+<td><code>@Positive</code></td>
+<td>被标注的元素必须为正数</td>
+</tr>
+<tr>
+<td><code>@PositiveOrZero</code></td>
+<td>被标注的元素必须为正数或 0</td>
+</tr>
+<tr>
+<td><code>@Max(value)</code></td>
+<td>被标注的元素必须小于等于指定的值</td>
+</tr>
+<tr>
+<td><code>@Min(value)</code></td>
+<td>被标注的元素必须大于等于指定的值</td>
+</tr>
+<tr>
+<td><code>@negative</code></td>
+<td>被标注的元素必须为负数</td>
+</tr>
+<tr>
+<td><code>NegativeOrZero</code></td>
+<td>被标注的元素必须为负数或 0</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>Boolean检查</strong>（不太用的到的样子）</p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@AssertFalse</td>
+<td>被标注的元素必须值为 <code>false</code></td>
+</tr>
+<tr>
+<td>@AssertTrue</td>
+<td>被标注的元素必须值为 <code>true</code></td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>长度检查</strong></p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Size(min,max)</td>
+<td>被标注的元素长度必须在 <code>min</code> 和 <code>max</code> 之间，可以是 String、Collection、Map、数组</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>日期检查</strong></p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@Future</code></td>
+<td>被标注的元素必须是一个将来的日期</td>
+</tr>
+<tr>
+<td><code>@FutureOrPresent</code></td>
+<td>被标注的元素必须是现在或者将来的日期</td>
+</tr>
+<tr>
+<td><code>@Past</code></td>
+<td>被标注的元素必须是一个过去的日期</td>
+</tr>
+<tr>
+<td><code>@PastOrPresent</code></td>
+<td>被标注的元素必须是现在或者过去的日期</td>
+</tr>
+</tbody></table>
+</li>
+<li><p><strong>其他</strong></p>
+<table>
+<thead>
+<tr>
+<th>注解</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>@Email</td>
+<td>被标注的元素必须是电子邮箱地址</td>
+</tr>
+<tr>
+<td>@Pattern(regexp)</td>
+<td>被标注的元素必须符合正则表达式</td>
+</tr>
+</tbody></table>
+</li>
+</ol>
+<h2 id="1-3-Vaild与-Vaildated"><a href="#1-3-Vaild与-Vaildated" class="headerlink" title="1.3 @Vaild与@Vaildated"></a>1.3 @Vaild与@Vaildated</h2><p>在第一步加注解的时候，可以明显的看到还有一个可能也是参数校验的注解<code>@Validated</code>，把<code>@Vaild</code>换成<code>@Validated</code>，我们惊奇的发现参数校验也能正常的工作，接下来我们就来看看这两注解之间的联系与区别。</p>
+<h3 id="1-3-1-来源"><a href="#1-3-1-来源" class="headerlink" title="1.3.1 来源"></a>1.3.1 来源</h3><p>一个是<strong>Spring</strong>的，一个是<strong>javax</strong>，了解过<code>@Autowired</code>与<code>@Resource</code>区别的老哥可能很快就反应过来了，就像这两个注解一样。一个是JSR规范的，一个是Spring规范的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.validation.annotation.Validated;</span><br><span class="line"><span class="keyword">import</span> javax.validation.Valid;</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-2-定义区别"><a href="#1-3-2-定义区别" class="headerlink" title="1.3.2 定义区别"></a>1.3.2 定义区别</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Validated &#123;</span><br><span class="line">    Class&lt;?&gt;[] value() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.METHOD, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Valid &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>差异主要有两点</strong>：</p>
+<ul>
+<li><p>能标注的地方</p>
+<p>可以看到<code>@Valid</code>注解除了能标注在<strong>类、方法、方法参数</strong>上还能标注在<strong>类里面属性、任何使用类型的地方</strong>。</p>
+</li>
+<li><p>属性</p>
+<p><code>Validated</code>注解里面比<code>Valid</code>多了一个value</p>
+</li>
+</ul>
+<p>接下来我们来结合定义区别看看它们的功能差异</p>
+<h3 id="1-3-3-功能差异"><a href="#1-3-3-功能差异" class="headerlink" title="1.3.3 功能差异"></a>1.3.3 功能差异</h3><h4 id="嵌套校验"><a href="#嵌套校验" class="headerlink" title="嵌套校验"></a>嵌套校验</h4><p>上文校验的时候我们在类属性上加上相关的限制注解就可以了，但是如果属性是一个类的实例，我们想校验这个作为属性的实例里面的字段，我们就只能使用<code>@Vaild</code>加在属性上，标注这是需要校验的属性。**<code>@Validated</code>不能标注在属性上<strong>，自然也就</strong>不支持嵌套校验**</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@PostMapping(&quot;/buy&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> ResponseResult <span class="title function_">buy</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Valid</span> ShoppingCart shoppingCart)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseResult.success(payService.pay(shoppingCart.getUserId(),shoppingCart.getItemList()));</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//购物车类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ShoppingCart</span> &#123;</span><br><span class="line">    <span class="meta">@Positive(message = &quot;用户id必须大于0&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Long userId;</span><br><span class="line">    <span class="meta">@NotEmpty(message = &quot;不能为空&quot;)</span></span><br><span class="line">    <span class="meta">@Valid</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Item&gt; itemList;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Long <span class="title function_">getUserId</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> userId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUserId</span><span class="params">(Long userId)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.userId = userId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> List&lt;Item&gt; <span class="title function_">getItemList</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> itemList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setItemList</span><span class="params">(List&lt;Item&gt; itemList)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.itemList = itemList;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//物品类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Item</span> &#123;</span><br><span class="line">    <span class="meta">@Positive(message = &quot;价格必须大于0&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> BigDecimal price;</span><br><span class="line">    <span class="meta">@NotBlank(message = &quot;物品名不能为空&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Positive(message = &quot;数量必须大于0&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> number;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> BigDecimal <span class="title function_">getPrice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPrice</span><span class="params">(BigDecimal price)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getNumber</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> number;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setNumber</span><span class="params">(<span class="type">int</span> number)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.number = number;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//...服务自行模拟</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;userId&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;itemList&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;price&quot;</span><span class="punctuation">:</span> <span class="string">&quot;142.0&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;小风车&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;number&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;price&quot;</span><span class="punctuation">:</span> <span class="string">&quot;-2&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;number&quot;</span><span class="punctuation">:</span> <span class="number">-1</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">500</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;[数量必须大于0, 价格必须大于0, 物品名不能为空]&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>可以看到校验成功了，当然这里的异常捕获逻辑比较简单，具体生产环境里可以将返回具体的校验信息，进行更清晰的信息提示。</p>
+<p><strong>杂记</strong>：</p>
+<ul>
+<li><p><code>@Valid</code>作用域比较广还可以标注在许多意向不到的位置</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//比如，(可以自行观察一下运行结果,都是可以正常校验的)</span></span><br><span class="line"><span class="keyword">private</span>  List&lt;<span class="meta">@Valid</span> Item&gt; itemList;</span><br><span class="line"><span class="keyword">private</span> <span class="meta">@Valid</span> List&lt; Item&gt; itemList;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>@Valid</code>与<code>@Validated</code>可以混用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//controller里面注解改为@Validated依然可以生效 </span></span><br><span class="line"><span class="meta">@PostMapping(&quot;/buy&quot;)</span></span><br><span class="line">    <span class="keyword">public</span>  ResponseResult  <span class="title function_">buy</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Validated</span> ShoppingCart  shoppingCart)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseResult.success(payService.pay(shoppingCart.getUserId(),shoppingCart.getItemList()));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>消息的顺序不固定</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="string">&quot;data&quot;</span>: <span class="literal">null</span>,</span><br><span class="line">    <span class="string">&quot;code&quot;</span>: <span class="number">500</span>,</span><br><span class="line">    <span class="string">&quot;msg&quot;</span>: <span class="string">&quot;[数量必须大于0, 价格必须大于0, 物品名不能为空]&quot;</span> <span class="comment">//这三条消息打印的顺序是不固定的</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h4><p>上面看注解代码的时候可以明显注意到<code>@Validated</code>注解里面有个<code>value</code>属性。**<code>@Valid</code>没有value属性<strong>，自然也就</strong>不支持分组校验**</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(&#123;ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> Validated &#123;</span><br><span class="line">    <span class="comment">//传入分组,默认是Defalut.class</span></span><br><span class="line">    Class&lt;?&gt;[] value() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这就和<code>@Validated</code>的分组校验有关了，(<code>@Valid</code>没有定义这个属性，自然也就不支持分组校验）</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Default是个接口，只起到标记作用</span></span><br><span class="line"><span class="keyword">package</span> javax.validation.groups;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Default</span> &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以自定义分组来指定需要校验的时机。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义Group类，里面两个接口用作校验(也可以用类，不过和原生的贴合一点比较好)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Group</span> &#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">GroupTest1</span>&#123;&#125;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">GroupTest2</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LoginUserDTO</span> &#123;</span><br><span class="line">    <span class="comment">//只有分组属于这两个才校验</span></span><br><span class="line">   <span class="meta">@NotBlank(message = &quot;账户不能为空&quot;,groups = &#123;Group.GroupTest1.class, Default.class&#125;)</span></span><br><span class="line">   <span class="keyword">private</span> <span class="type">String</span> <span class="variable">userName</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line">   <span class="meta">@NotBlank(message = &quot;密码不能为空&quot;)</span></span><br><span class="line">   <span class="keyword">private</span> <span class="type">String</span> <span class="variable">password</span> <span class="operator">=</span> <span class="string">&quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">getUserName</span><span class="params">()</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">this</span>.userName;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setUserName</span><span class="params">(String userName)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.userName = userName;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> String <span class="title function_">getPassword</span><span class="params">()</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">this</span>.password;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setPassword</span><span class="params">(String password)</span> &#123;</span><br><span class="line">      <span class="built_in">this</span>.password = password;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//controller</span></span><br><span class="line">	<span class="meta">@PostMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> ResponseResult <span class="title function_">login</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Validated(value = &#123;Group.GroupTest2.class&#125;)</span> LoginUserDTO loginUserDTO)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ResponseResult.success(loginService.login(loginUserDTO.getUserName(),loginUserDTO.getPassword()));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>结果</strong>：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//不属于分组，不校验userName（其他情况自行尝试</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;userName&quot;</span><span class="punctuation">:</span><span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;password&quot;</span><span class="punctuation">:</span><span class="string">&quot;123456&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="string">&quot;登录成功&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;code&quot;</span><span class="punctuation">:</span> <span class="number">200</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;操作成功&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="2-深入理解-Valid与-Validated"><a href="#2-深入理解-Valid与-Validated" class="headerlink" title="2. 深入理解@Valid与@Validated"></a>2. 深入理解@Valid与@Validated</h1><p>因为<code>@Valid</code>与<code>@Validated</code>能混合使用，我们可以大胆猜测一下，一定有一个<code>Adapter</code>来承担两者的适配工作，搜搜Valid相关的Adapter，还真有一个。</p>
+<h2 id="2-1-SpringValidtorAdapter"><a href="#2-1-SpringValidtorAdapter" class="headerlink" title="2.1 SpringValidtorAdapter"></a>2.1 SpringValidtorAdapter</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SpringValidatorAdapter</span> <span class="keyword">implements</span> <span class="title class_">SmartValidator</span>, javax.validation.Validator &#123;</span><br><span class="line">    	<span class="meta">@Nullable</span></span><br><span class="line">	<span class="keyword">private</span> javax.validation.Validator targetValidator;</span><br><span class="line">    <span class="comment">//没有返回值，重写Spring中Validator的方法</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">validate</span><span class="params">(Object target, Errors errors, Object... validationHints)</span> &#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">this</span>.targetValidator != <span class="literal">null</span>) &#123;</span><br><span class="line">			processConstraintViolations(</span><br><span class="line">					<span class="built_in">this</span>.targetValidator.validate(target, asValidationGroups(validationHints)), errors);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">    <span class="comment">//有返回值，重写的javax中Validator的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> &lt;T&gt; Set&lt;ConstraintViolation&lt;T&gt;&gt; <span class="title function_">validate</span><span class="params">(T object, Class&lt;?&gt;... groups)</span> &#123;</span><br><span class="line">		Assert.state(<span class="built_in">this</span>.targetValidator != <span class="literal">null</span>, <span class="string">&quot;No target Validator set&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">this</span>.targetValidator.validate(object, groups);</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>SpringValidtorAdapter的结构</strong></p>
+<p><img src="/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/Blog/source/_posts/SpringBoot参数校验/image-20240602190311638.png" alt="image-20240602190311638"></p>
+<p>根据上面结构图和代码，可以看到<code>SpringValidatorAdapter</code>实现了两个不同的<code>validator</code>接口，针对其中核心方法<code>validate()</code>进行了返回值的适配（有点像<code>Runnable</code>和<code> Callable</code>之间的适配）</p>
+<h2 id="2-2-具体校验器的获取实现"><a href="#2-2-具体校验器的获取实现" class="headerlink" title="2.2 具体校验器的获取实现"></a>2.2 具体校验器的获取实现</h2><h3 id="2-2-1-ValidatorFactory"><a href="#2-2-1-ValidatorFactory" class="headerlink" title="2.2.1 ValidatorFactory"></a>2.2.1 ValidatorFactory</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ValidatorFactory</span> <span class="keyword">extends</span> <span class="title class_">AutoCloseable</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 显然，这个接口是最为重要的</span></span><br><span class="line">	Validator <span class="title function_">getValidator</span><span class="params">()</span>;</span><br><span class="line">	<span class="comment">// 定义一个新的ValidatorContext验证器上下文，并且和Validator关联上</span></span><br><span class="line">	ValidatorContext <span class="title function_">usingContext</span><span class="params">()</span>;</span><br><span class="line">    </span><br><span class="line">	MessageInterpolator <span class="title function_">getMessageInterpolator</span><span class="params">()</span>;</span><br><span class="line">	TraversableResolver <span class="title function_">getTraversableResolver</span><span class="params">()</span>;</span><br><span class="line">	ConstraintValidatorFactory <span class="title function_">getConstraintValidatorFactory</span><span class="params">()</span>;</span><br><span class="line">	ParameterNameProvider <span class="title function_">getParameterNameProvider</span><span class="params">()</span>;</span><br><span class="line">	ClockProvider <span class="title function_">getClockProvider</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">public</span> &lt;T&gt; T <span class="title function_">unwrap</span><span class="params">(Class&lt;T&gt; type)</span>;</span><br><span class="line">	<span class="comment">// 复写AutoCloseable的方法</span></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ValidatorFactory</code>的实现可以分成两部分，<code>hibernate</code>和<code>Spring</code>实现。</p>
+<h4 id="LocalValidatorFactoryBean"><a href="#LocalValidatorFactoryBean" class="headerlink" title="LocalValidatorFactoryBean"></a>LocalValidatorFactoryBean</h4><p><code>LocalValidatorFactoryBean</code>不仅是<code>ValidatorFactory</code>实现，还是<code>SpringValidAdapter</code>子类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LocalValidatorFactoryBean</span> <span class="keyword">extends</span> <span class="title class_">SpringValidatorAdapter</span></span><br><span class="line">		<span class="keyword">implements</span> <span class="title class_">ValidatorFactory</span>, ApplicationContextAware, InitializingBean, DisposableBean &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//重写的InitializingBean中的方法，Bean初始化时会执行</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">	<span class="meta">@SuppressWarnings(&#123;&quot;rawtypes&quot;, &quot;unchecked&quot;&#125;)</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">afterPropertiesSet</span><span class="params">()</span> &#123;</span><br><span class="line">		Configuration&lt;?&gt; configuration;</span><br><span class="line">        </span><br><span class="line">        ...</span><br><span class="line">      </span><br><span class="line">        <span class="comment">//根据配置创建工厂，并从工厂里面拿到Validator</span></span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="built_in">this</span>.validatorFactory = configuration.buildValidatorFactory();</span><br><span class="line">			setTargetValidator(<span class="built_in">this</span>.validatorFactory.getValidator());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">finally</span> &#123;</span><br><span class="line">			closeMappingStreams(mappingStreams);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ValidatorFactoryImpl"><a href="#ValidatorFactoryImpl" class="headerlink" title="ValidatorFactoryImpl"></a>ValidatorFactoryImpl</h4><p>在最开始我们导入了校验starter，导入的就有<strong>org.hibernate.validator</strong>相关的类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.hibernate.validator.internal.engine;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ValidatorFactoryImpl</span> <span class="keyword">implements</span> <span class="title class_">HibernateValidatorFactory</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> Validator <span class="title function_">getValidator</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> createValidator(</span><br><span class="line">				constraintValidatorManager.getDefaultConstraintValidatorFactory(),</span><br><span class="line">				valueExtractorManager,</span><br><span class="line">				validatorFactoryScopedContext,</span><br><span class="line">				methodValidationConfiguration</span><br><span class="line">		);</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">    Validator <span class="title function_">createValidator</span><span class="params">(ConstraintValidatorFactory constraintValidatorFactory, </span></span><br><span class="line"><span class="params">                              ValueExtractorManager valueExtractorManager,</span></span><br><span class="line"><span class="params">			ValidatorFactoryScopedContext validatorFactoryScopedContext,</span></span><br><span class="line"><span class="params">                              MethodValidationConfiguration methodValidationConfiguration)</span> &#123;</span><br><span class="line">        </span><br><span class="line">		<span class="type">BeanMetaDataManager</span> <span class="variable">beanMetaDataManager</span> <span class="operator">=</span> beanMetaDataManagers.computeIfAbsent(</span><br><span class="line">				<span class="keyword">new</span> <span class="title class_">BeanMetaDataManagerKey</span>( validatorFactoryScopedContext.getParameterNameProvider(), </span><br><span class="line">                                           valueExtractorManager, methodValidationConfiguration ),</span><br><span class="line">				key -&gt; <span class="keyword">new</span> <span class="title class_">BeanMetaDataManager</span>(</span><br><span class="line">						constraintHelper,</span><br><span class="line">						executableHelper,</span><br><span class="line">						typeResolutionHelper,</span><br><span class="line">						validatorFactoryScopedContext.getParameterNameProvider(),</span><br><span class="line">						valueExtractorManager,</span><br><span class="line">						validationOrderGenerator,</span><br><span class="line">						buildDataProviders(),</span><br><span class="line">						methodValidationConfiguration</span><br><span class="line">				)</span><br><span class="line">		 );</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ValidatorImpl</span>(</span><br><span class="line">				constraintValidatorFactory,</span><br><span class="line">				beanMetaDataManager,</span><br><span class="line">				valueExtractorManager,</span><br><span class="line">				constraintValidatorManager,</span><br><span class="line">				validationOrderGenerator,</span><br><span class="line">				validatorFactoryScopedContext</span><br><span class="line">		);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-2-ValidatorImpl"><a href="#2-2-2-ValidatorImpl" class="headerlink" title="2.2.2 ValidatorImpl"></a>2.2.2 ValidatorImpl</h3><p><code>ValidatorImpl</code>是<strong>Hibernate Validator</strong>提供的唯一校验器实现，校验过程很复杂，了解是哪个类就行，感兴趣可以深度剖析</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ValidatorImpl</span> <span class="keyword">implements</span> <span class="title class_">Validator</span>, ExecutableValidator &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Collection&lt;Class&lt;?&gt;&gt; DEFAULT_GROUPS = Collections.&lt;Class&lt;?&gt;&gt;singletonList( Default.class );</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 分组Group校验的顺序问题</span></span><br><span class="line">	<span class="comment">// 若依赖于校验顺序，可用使用@GroupSequence注解来控制Group顺序</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">transient</span> ValidationOrderGenerator validationOrderGenerator;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> ConstraintValidatorFactory constraintValidatorFactory;</span><br><span class="line">	...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">final</span> &lt;T&gt; Set&lt;ConstraintViolation&lt;T&gt;&gt; <span class="title function_">validate</span><span class="params">(T object, Class&lt;?&gt;... groups)</span> &#123;</span><br><span class="line">		Contracts.assertNotNull( object, MESSAGES.validatedObjectMustNotBeNull() );</span><br><span class="line">        <span class="comment">// groups里面的内容不能有null</span></span><br><span class="line">		sanityCheckGroups( groups );</span><br><span class="line"></span><br><span class="line">		<span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">		Class&lt;T&gt; rootBeanClass = (Class&lt;T&gt;) object.getClass();</span><br><span class="line">		BeanMetaData&lt;T&gt; rootBeanMetaData = beanMetaDataManager.getBeanMetaData( rootBeanClass );</span><br><span class="line">        <span class="comment">//没有约束直接返回</span></span><br><span class="line">		<span class="keyword">if</span> ( !rootBeanMetaData.hasConstraints() ) &#123;</span><br><span class="line">			<span class="keyword">return</span> Collections.emptySet();</span><br><span class="line">		&#125;</span><br><span class="line">        </span><br><span class="line">		BaseBeanValidationContext&lt;T&gt; validationContext = getValidationContextBuilder().forValidate( rootBeanClass, rootBeanMetaData, object );</span><br><span class="line"></span><br><span class="line">		<span class="type">ValidationOrder</span> <span class="variable">validationOrder</span> <span class="operator">=</span> determineGroupValidationOrder( groups );</span><br><span class="line">         <span class="comment">// ValueContext一个实例用于收集所有相关信息，以验证单个类、属性或方法调用。</span></span><br><span class="line">		BeanValueContext&lt;?, Object&gt; valueContext = ValueContexts.getLocalExecutionContextForBean(</span><br><span class="line">				validatorScopedContext.getParameterNameProvider(),</span><br><span class="line">				object,</span><br><span class="line">				validationContext.getRootBeanMetaData(),</span><br><span class="line">				PathImpl.createRootPath()</span><br><span class="line">		);</span><br><span class="line">        <span class="comment">// 返回的是失败的消息对象：ConstraintViolation  它是被存储在ValidationContext里的</span></span><br><span class="line">		<span class="keyword">return</span> validateInContext( validationContext, valueContext, validationOrder );</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="3-异常信息"><a href="#3-异常信息" class="headerlink" title="3. 异常信息"></a>3. 异常信息</h1><h2 id="3-1-说明"><a href="#3-1-说明" class="headerlink" title="3.1 说明"></a>3.1 说明</h2><p>参数校验失败抛出的异常时<code>MethodArgumentNotValidException</code>，不过建议捕获<code>BindException</code>，因为<code>MethodArgumentNotValidException</code>是对<code>BindResult</code>的封装，只能通过<code>getMessage()</code>获取封装好的信息，不够灵活</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//看的出来，确实很简单</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MethodArgumentNotValidException</span> <span class="keyword">extends</span> <span class="title class_">BindException</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> MethodParameter parameter;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MethodArgumentNotValidException</span><span class="params">(MethodParameter parameter, BindingResult bindingResult)</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>(bindingResult);</span><br><span class="line">        <span class="built_in">this</span>.parameter = parameter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> MethodParameter <span class="title function_">getParameter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.parameter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getMessage</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">StringBuilder</span> <span class="variable">sb</span> <span class="operator">=</span> (<span class="keyword">new</span> <span class="title class_">StringBuilder</span>(<span class="string">&quot;Validation failed for argument [&quot;</span>)).append(<span class="built_in">this</span>.parameter.getParameterIndex()).append(<span class="string">&quot;] in &quot;</span>).append(<span class="built_in">this</span>.parameter.getExecutable().toGenericString());</span><br><span class="line">        <span class="type">BindingResult</span> <span class="variable">bindingResult</span> <span class="operator">=</span> <span class="built_in">this</span>.getBindingResult();</span><br><span class="line">        <span class="keyword">if</span> (bindingResult.getErrorCount() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            sb.append(<span class="string">&quot; with &quot;</span>).append(bindingResult.getErrorCount()).append(<span class="string">&quot; errors&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        sb.append(<span class="string">&quot;: &quot;</span>);</span><br><span class="line">        <span class="type">Iterator</span> <span class="variable">var3</span> <span class="operator">=</span> bindingResult.getAllErrors().iterator();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span>(var3.hasNext()) &#123;</span><br><span class="line">            <span class="type">ObjectError</span> <span class="variable">error</span> <span class="operator">=</span> (ObjectError)var3.next();</span><br><span class="line">            sb.append(<span class="string">&#x27;[&#x27;</span>).append(error).append(<span class="string">&quot;] &quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-2-BindException"><a href="#3-2-BindException" class="headerlink" title="3.2 BindException"></a>3.2 BindException</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BindException里面主要是封装了一个BindResult</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BindException</span> <span class="keyword">extends</span> <span class="title class_">Exception</span> <span class="keyword">implements</span> <span class="title class_">BindingResult</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> BindingResult bindingResult;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BindException</span><span class="params">(BindingResult bindingResult)</span> &#123;</span><br><span class="line">        Assert.notNull(bindingResult, <span class="string">&quot;BindingResult must not be null&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.bindingResult = bindingResult;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BindException</span><span class="params">(Object target, String objectName)</span> &#123;</span><br><span class="line">        Assert.notNull(target, <span class="string">&quot;Target object must not be null&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.bindingResult = <span class="keyword">new</span> <span class="title class_">BeanPropertyBindingResult</span>(target, objectName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-1-BindResult"><a href="#3-2-1-BindResult" class="headerlink" title="3.2.1 BindResult"></a>3.2.1 BindResult</h3><p>BindResult是一个接口，里面没有什么特别的东西。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">BindingResult</span> <span class="keyword">extends</span> <span class="title class_">Errors</span> &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">MODEL_KEY_PREFIX</span> <span class="operator">=</span> BindingResult.class.getName() + <span class="string">&quot;.&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    Object <span class="title function_">getTarget</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    Map&lt;String, Object&gt; <span class="title function_">getModel</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    Object <span class="title function_">getRawFieldValue</span><span class="params">(String field)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    PropertyEditor <span class="title function_">findEditor</span><span class="params">(<span class="meta">@Nullable</span> String field, <span class="meta">@Nullable</span> Class&lt;?&gt; valueType)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    PropertyEditorRegistry <span class="title function_">getPropertyEditorRegistry</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    String[] resolveMessageCodes(String errorCode);</span><br><span class="line"></span><br><span class="line">    String[] resolveMessageCodes(String errorCode, String field);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">addError</span><span class="params">(ObjectError error)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">recordFieldValue</span><span class="params">(String field, Class&lt;?&gt; type, <span class="meta">@Nullable</span> Object value)</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">recordSuppressedField</span><span class="params">(String field)</span> &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> String[] getSuppressedFields() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">0</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-2-AbstractBindingResult"><a href="#3-2-2-AbstractBindingResult" class="headerlink" title="3.2.2 AbstractBindingResult"></a>3.2.2 AbstractBindingResult</h3><p>一般来说抽象类都是接口的基本实现，BindingResult也不例外</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">AbstractBindingResult</span> <span class="keyword">extends</span> <span class="title class_">AbstractErrors</span> <span class="keyword">implements</span> <span class="title class_">BindingResult</span>, Serializable &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String objectName;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">MessageCodesResolver</span> <span class="variable">messageCodesResolver</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultMessageCodesResolver</span>();</span><br><span class="line">    <span class="comment">//储存错误信息</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;ObjectError&gt; errors = <span class="keyword">new</span> <span class="title class_">ArrayList</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Class&lt;?&gt;&gt; fieldTypes = <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; fieldValues = <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; suppressedFields = <span class="keyword">new</span> <span class="title class_">HashSet</span>();</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ObjectError"><a href="#ObjectError" class="headerlink" title="ObjectError"></a>ObjectError</h4><ol>
+<li><p>本体</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ObjectError</span> <span class="keyword">extends</span> <span class="title class_">DefaultMessageSourceResolvable</span> &#123;</span><br><span class="line">    <span class="comment">//校验失败的对象名，比如shoppingCart</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String objectName;</span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">transient</span> Object source;</span><br><span class="line">    </span><br><span class="line">	...       </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>子类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ObjectError的子类，获取ObjectError可以强转为该类 (具体实现是FieldError的子类ViolationFieldError）</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FieldError</span> <span class="keyword">extends</span> <span class="title class_">ObjectError</span> &#123;</span><br><span class="line">    <span class="comment">//校验失败的地方，比如itemList[1].name</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String field;</span><br><span class="line">    <span class="comment">//校验失败的值，比如-1</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object rejectedValue;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">boolean</span> bindingFailure;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>父类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ObjectError的父类</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DefaultMessageSourceResolvable</span> <span class="keyword">implements</span> <span class="title class_">MessageSourceResolvable</span>, Serializable &#123;</span><br><span class="line">    <span class="comment">//存放详细的校验类型信息</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String[] codes;</span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object[] arguments;</span><br><span class="line">    <span class="comment">//注解里面传的Message到这了</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String defaultMessage;</span><br><span class="line">    </span><br><span class="line"> 	...   </span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>Tips</strong>：可以自行打印观察值，推测存放信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ExceptionHandler(BindException.class)</span></span><br><span class="line">   <span class="keyword">public</span> ResponseResult <span class="title function_">bindExceptionHandler</span><span class="params">(BindException e)</span> &#123;</span><br><span class="line">       List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">       <span class="type">BindingResult</span> <span class="variable">bindingResult</span> <span class="operator">=</span> e.getBindingResult();</span><br><span class="line">       <span class="keyword">for</span> (ObjectError objectError : bindingResult.getAllErrors()) &#123;</span><br><span class="line">           <span class="type">FieldError</span> <span class="variable">fieldError</span> <span class="operator">=</span> (FieldError) objectError;</span><br><span class="line">           System.out.println(<span class="string">&quot;--------------&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;codes&quot;</span>);</span><br><span class="line">           Arrays.stream(fieldError.getCodes()).forEach(System.out::println);</span><br><span class="line">           System.out.println(<span class="string">&quot;--------------&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;code&quot;</span>);</span><br><span class="line">           System.out.println(fieldError.getCode());</span><br><span class="line">           System.out.println(<span class="string">&quot;--------------&quot;</span>);</span><br><span class="line">           System.out.println(<span class="string">&quot;ObjectName&quot;</span>);</span><br><span class="line">           System.out.println(fieldError.getObjectName());</span><br><span class="line">           logger.error(<span class="string">&quot;参数 &#123;&#125; ,&#123;&#125; 校验错误：&#123;&#125;&quot;</span>, fieldError.getField(), fieldError.getRejectedValue(), fieldError.getDefaultMessage());</span><br><span class="line">           list.add(fieldError.getDefaultMessage());</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> ResponseResult.error(AppHttpCodeEnum.SYSTEM_ERROR.getCode(),list.toString());</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SpringBoot/" rel="tag"># SpringBoot</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/05/08/java%E4%B8%A4%E9%94%81%E4%B9%8B%E4%B8%80%E7%9A%84synchronized/" rel="prev" title="synchronized解析">
+                  <i class="fa fa-angle-left"></i> synchronized解析
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/09/02/id%E7%94%9F%E6%88%90/" rel="next" title="id生成">
+                  id生成 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ruizhi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:16</span>
+  </span>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+
+</body>
+</html>

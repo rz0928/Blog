@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ruizhihut.top","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="分布式场景下全局唯一id的生成方案，雪花算法、数据库自增、redis自增。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="id生成">
+<meta property="og:url" content="https://ruizhihut.top/2024/09/02/id%E7%94%9F%E6%88%90/index.html">
+<meta property="og:site_name" content="ruizhi&#39;s Blog">
+<meta property="og:description" content="分布式场景下全局唯一id的生成方案，雪花算法、数据库自增、redis自增。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ruizhihut.top/2024/09/02/id%E7%94%9F%E6%88%90/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95.webp">
+<meta property="article:published_time" content="2024-09-02T07:00:55.000Z">
+<meta property="article:modified_time" content="2024-10-24T12:09:56.670Z">
+<meta property="article:author" content="ruizhi">
+<meta property="article:tag" content="分布式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ruizhihut.top/2024/09/02/id%E7%94%9F%E6%88%90/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95.webp">
+
+
+<link rel="canonical" href="https://ruizhihut.top/2024/09/02/id%E7%94%9F%E6%88%90/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ruizhihut.top/2024/09/02/id%E7%94%9F%E6%88%90/","path":"2024/09/02/id生成/","title":"id生成"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>id生成 | ruizhi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ruizhi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95"><span class="nav-text">1. 雪花算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-%E7%BB%93%E6%9E%84"><span class="nav-text">1.1 结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">1.2 代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3-%E9%97%AE%E9%A2%98"><span class="nav-text">1.3 问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8id%E5%88%86%E9%85%8D%E9%97%AE%E9%A2%98"><span class="nav-text">机器id分配问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-1-%E7%9B%B4%E6%8E%A5%E4%BD%BF%E7%94%A8ip%E5%9C%B0%E5%9D%80"><span class="nav-text">1.3.1 直接使用ip地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-2-redis%E7%BB%B4%E6%8A%A4%E6%9C%BA%E5%99%A8id"><span class="nav-text">1.3.2 redis维护机器id</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-3-zookeeper%E7%BB%B4%E6%8A%A4%E6%9C%BA%E5%99%A8id"><span class="nav-text">1.3.3 zookeeper维护机器id</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%87%AA%E5%A2%9E"><span class="nav-text">2. 数据库自增</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-redis%E7%94%9F%E6%88%90ID"><span class="nav-text">3. redis生成ID</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-%E5%85%B6%E4%BB%96"><span class="nav-text">4. 其他</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ruizhi"
+      src="/images/cat1.jpg">
+  <p class="site-author-name" itemprop="name">ruizhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rz0928" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rz0928" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ruizhi0928@gmail.com" title="E-Mail → mailto:ruizhi0928@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ruizhihut.top/2024/09/02/id%E7%94%9F%E6%88%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/cat1.jpg">
+      <meta itemprop="name" content="ruizhi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="id生成 | ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          id生成
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-10-24 20:09:56" itemprop="dateModified" datetime="2024-10-24T20:09:56+08:00">2024-10-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%90%8E%E7%AB%AF%E5%BC%80%E5%8F%91/" itemprop="url" rel="index"><span itemprop="name">后端开发</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>分布式场景下全局唯一id的生成方案，雪花算法、数据库自增、redis自增。</p>
+<span id="more"></span>
+
+<h1 id="1-雪花算法"><a href="#1-雪花算法" class="headerlink" title="1. 雪花算法"></a>1. 雪花算法</h1><h2 id="1-1-结构"><a href="#1-1-结构" class="headerlink" title="1.1 结构"></a>1.1 结构</h2><p><img src="/2024/09/02/id%E7%94%9F%E6%88%90/%E9%9B%AA%E8%8A%B1%E7%AE%97%E6%B3%95.webp" alt="8542a7cdeca53f63c9ad4f4dfd05f61b"></p>
+<ul>
+<li>41bit时间戳：这里采用的就是当前系统的具体时间，单位为毫秒</li>
+<li>10bit工作机器ID（workerId）：每台机器分配一个id，这样可以标示不同的机器，但是上限为1024，标示一个集群某个业务最多部署的机器个数上限</li>
+<li>12bit序列号（自增域）：表示在某一毫秒下，这个自增域最大可以分配的bit个数，在当前这种配置下，每一毫秒可以分配2^12个数据，也就是说QPS可以到 409.6 w&#x2F;s。</li>
+</ul>
+<h2 id="1-2-代码实现"><a href="#1-2-代码实现" class="headerlink" title="1.2 代码实现"></a>1.2 代码实现</h2><p>可以用hutool中的工具类<code>IdUtil</code>来创建雪花算法生成的id</p>
+<ol>
+<li><p>导入<code>hutool</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;cn.hutool&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;hutool-all&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;<span class="number">5.7</span><span class="number">.2</span>&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>IdUtil</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">IdUtil.createSnowflake(<span class="number">0L</span>,<span class="number">1L</span>);</span><br><span class="line"><span class="comment">//传入参数是workerId和datacenterId</span></span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> Snowflake <span class="title function_">createSnowflake</span><span class="params">(<span class="type">long</span> workerId, <span class="type">long</span> datacenterId)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Snowflake</span>(workerId, datacenterId);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p><strong>代码剖析：</strong></p>
+<ol>
+<li><p><strong>初始化</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//上方函数调用的构造参数，进行初始化</span></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">Snowflake</span><span class="params">(<span class="type">long</span> workerId, <span class="type">long</span> dataCenterId)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>(workerId, dataCenterId, <span class="literal">false</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Snowflake</span><span class="params">(<span class="type">long</span> workerId, <span class="type">long</span> dataCenterId, <span class="type">boolean</span> isUseSystemClock)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>((Date)<span class="literal">null</span>, workerId, dataCenterId, isUseSystemClock);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Snowflake</span><span class="params">(Date epochDate, <span class="type">long</span> workerId, <span class="type">long</span> dataCenterId, <span class="type">boolean</span> isUseSystemClock)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.workerIdBits = <span class="number">5L</span>;</span><br><span class="line">        <span class="comment">//最大workerId，5位也就是2^5-1</span></span><br><span class="line">        <span class="built_in">this</span>.maxWorkerId = <span class="number">31L</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">this</span>.dataCenterIdBits = <span class="number">5L</span>;</span><br><span class="line">        <span class="comment">//最大dataCenterId，5位也就是2^5-1</span></span><br><span class="line">        <span class="built_in">this</span>.maxDataCenterId = <span class="number">31L</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">this</span>.sequenceBits = <span class="number">12L</span>;</span><br><span class="line">        <span class="built_in">this</span>.workerIdShift = <span class="number">12L</span>;</span><br><span class="line">        <span class="built_in">this</span>.dataCenterIdShift = <span class="number">17L</span>;</span><br><span class="line">        <span class="built_in">this</span>.timestampLeftShift = <span class="number">22L</span>;</span><br><span class="line">        <span class="comment">//最大序列号，2^12 - 1</span></span><br><span class="line">        <span class="built_in">this</span>.sequenceMask = <span class="number">4095L</span>;</span><br><span class="line">        <span class="built_in">this</span>.sequence = <span class="number">0L</span>;</span><br><span class="line">        <span class="built_in">this</span>.lastTimestamp = -<span class="number">1L</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//使用工具类传的是null</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> != epochDate) &#123;</span><br><span class="line">            <span class="built_in">this</span>.twepoch = epochDate.getTime();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.twepoch = <span class="number">1288834974657L</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (workerId &lt;= <span class="number">31L</span> &amp;&amp; workerId &gt;= <span class="number">0L</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (dataCenterId &lt;= <span class="number">31L</span> &amp;&amp; dataCenterId &gt;= <span class="number">0L</span>) &#123;</span><br><span class="line">                <span class="built_in">this</span>.workerId = workerId;</span><br><span class="line">                <span class="built_in">this</span>.dataCenterId = dataCenterId;</span><br><span class="line">                <span class="built_in">this</span>.useSystemClock = isUseSystemClock;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(StrUtil.format(<span class="string">&quot;datacenter Id can&#x27;t be greater than &#123;&#125; or less than 0&quot;</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="number">31L</span>&#125;));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(StrUtil.format(<span class="string">&quot;worker Id can&#x27;t be greater than &#123;&#125; or less than 0&quot;</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="number">31L</span>&#125;));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>具体创建逻辑</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">long</span> <span class="title function_">nextId</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//生成的时间戳13位，默认的twepoch也是13位</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">timestamp</span> <span class="operator">=</span> <span class="built_in">this</span>.genTime();</span><br><span class="line">    <span class="comment">//时间片回拨问题，时间差较小进行同步,时间差较大直接抛异常</span></span><br><span class="line">        <span class="keyword">if</span> (timestamp &lt; <span class="built_in">this</span>.lastTimestamp) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">this</span>.lastTimestamp - timestamp &gt;= <span class="number">2000L</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(StrUtil.format(<span class="string">&quot;Clock moved backwards. Refusing to generate id for &#123;&#125;ms&quot;</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="built_in">this</span>.lastTimestamp - timestamp&#125;));</span><br><span class="line">            &#125;</span><br><span class="line">            timestamp = <span class="built_in">this</span>.lastTimestamp;</span><br><span class="line">        &#125;</span><br><span class="line">    <span class="comment">//序号自增,增到最大再次将时间戳更新(防止id重复)</span></span><br><span class="line">        <span class="keyword">if</span> (timestamp == <span class="built_in">this</span>.lastTimestamp) &#123;</span><br><span class="line">            <span class="type">long</span> <span class="variable">sequence</span> <span class="operator">=</span> <span class="built_in">this</span>.sequence + <span class="number">1L</span> &amp; <span class="number">4095L</span>;</span><br><span class="line">            <span class="keyword">if</span> (sequence == <span class="number">0L</span>) &#123;</span><br><span class="line">                timestamp = <span class="built_in">this</span>.tilNextMillis(<span class="built_in">this</span>.lastTimestamp);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">this</span>.sequence = sequence;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.sequence = <span class="number">0L</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">this</span>.lastTimestamp = timestamp;</span><br><span class="line">    <span class="comment">//创建Id，(时间戳 - 1288834974657L) + 五位的dtaCenterId + 五位的workerId + 12位序列号</span></span><br><span class="line">    <span class="comment">//很符合雪花算法的结构 时间戳 + 10位机器Id + 12位序列号</span></span><br><span class="line">        <span class="keyword">return</span> timestamp - <span class="built_in">this</span>.twepoch &lt;&lt; <span class="number">22</span> | <span class="built_in">this</span>.dataCenterId &lt;&lt; <span class="number">17</span> | <span class="built_in">this</span>.workerId &lt;&lt; <span class="number">12</span> | <span class="built_in">this</span>.sequence;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="1-3-问题"><a href="#1-3-问题" class="headerlink" title="1.3 问题"></a>1.3 问题</h2><p>雪花算法可能出现以下问题</p>
+<ul>
+<li><strong>时间片回拨</strong>：由于机器的时间是动态的调整的，有可能会出现时间跑到之前几毫秒，如果这个时候获取到了这种时间，则会出现<strong>id重复</strong></li>
+<li><strong>机器id分配以及回收</strong>：机器id需要每台机器不一样，这样的方式分配需要有方案进行处理，同时也要考虑，如果该机器宕机了，对应的workerId分配后的回收问题</li>
+<li><strong>机器id上线</strong>：机器id是固定的bit，那么也就是对应的机器个数是有上限的，在有些业务场景下，需要所有机器共享同一个业务空间，那么10bit表示的1024台机器是不够的。</li>
+</ul>
+<p><strong>解决方案</strong></p>
+<p>问题的处理没有完美的方案，只要选一个适合自身业务场景的就行</p>
+<ol>
+<li><p><strong>时间回拨问题</strong></p>
+<ul>
+<li>出现回拨直接抛异常</li>
+<li>采用等待跟上次时间的一段范围：这种算是简单解决，可以接受，但是如果等待一段时间后再出现回拨，则抛异常。（hutool工具包中就采用的这种方案）</li>
+</ul>
+</li>
+<li><p><strong>机器id上限</strong></p>
+<p>这个问题受限于雪花算法的结构，除非改一下雪花算法增加机器Id位数，不然没法解决</p>
+</li>
+</ol>
+<h3 id="机器id分配问题"><a href="#机器id分配问题" class="headerlink" title="机器id分配问题"></a>机器id分配问题</h3><p><strong>机器id分配问题</strong>比起雪花算法，它和业务的关联性更大，这里单独拿出来说一下。</p>
+<p>在上面代码中，我们使用hutool工具包随便传入了两个值作为workerId和datacenterId，但真实生产环境中这两个值是需要有一套分配策略来产生的（多个不同的Java程序使用相同的机器id可能会导致id重复生成）。</p>
+<p><strong>需求</strong>：</p>
+<ol>
+<li>机器id需要能够不重复的分配给所有JVM实例</li>
+<li>机器id数量有限，需要对不使用的机器id进行回收复用</li>
+</ol>
+<h4 id="1-3-1-直接使用ip地址"><a href="#1-3-1-直接使用ip地址" class="headerlink" title="1.3.1 直接使用ip地址"></a>1.3.1 直接使用ip地址</h4><p>服务器的IP地址一般都是公司的内网IP，子网划分时同一子网IP的前几位基本是相同的，根据这一特性我们可以在IP地址中取10位作为机器id。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IDGenerator</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> workerId;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> datacenterId;</span><br><span class="line">    <span class="keyword">private</span> Snowflake snowflake;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">IDGenerator</span><span class="params">(<span class="type">long</span> workerId, <span class="type">long</span> datacenterId)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.workerId = workerId;</span><br><span class="line">        <span class="built_in">this</span>.datacenterId = datacenterId;</span><br><span class="line">        <span class="built_in">this</span>.snowflake = IdUtil.createSnowflake(<span class="built_in">this</span>.workerId, <span class="built_in">this</span>.datacenterId);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@description</span> 默认使用ip地址最后10位作为机器id</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">IDGenerator</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">//取ip地址最后10位作为机器id</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">machineId</span> <span class="operator">=</span> NetUtil.ipv4ToLong(NetUtil.getLocalhostStr()) &amp; <span class="number">1023</span>;</span><br><span class="line">        <span class="comment">//machineId低5位作为workerId</span></span><br><span class="line">        <span class="built_in">this</span>.workerId = machineId &amp; <span class="number">31</span>;</span><br><span class="line">        <span class="comment">//machineId高5位作为datacenterId</span></span><br><span class="line">        <span class="built_in">this</span>.datacenterId = machineId &gt;&gt; <span class="number">5</span>;</span><br><span class="line">        <span class="built_in">this</span>.snowflake = IdUtil.createSnowflake(<span class="built_in">this</span>.workerId, <span class="built_in">this</span>.datacenterId);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> IDGenerator <span class="title function_">createWithWorkerId</span><span class="params">(<span class="type">long</span> workerId)</span> &#123;</span><br><span class="line">        <span class="comment">//取ip地址最后10位高五位作为默认datacenterId</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">datacenterId</span> <span class="operator">=</span> (NetUtil.ipv4ToLong(NetUtil.getLocalhostStr()) &gt;&gt; <span class="number">5</span>) &amp; <span class="number">31</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IDGenerator</span>(workerId, datacenterId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> IDGenerator <span class="title function_">createWithDatacenterId</span><span class="params">(<span class="type">long</span> datacenterId)</span> &#123;</span><br><span class="line">        <span class="comment">//取ip地址最后五位作为默认workerId</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">workerId</span> <span class="operator">=</span> NetUtil.ipv4ToLong(NetUtil.getLocalhostStr()) &amp; <span class="number">31</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IDGenerator</span>(workerId, datacenterId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> IDGenerator <span class="title function_">createWithWorkerIdAndDatacenterId</span><span class="params">(<span class="type">long</span> workerId, <span class="type">long</span> datacenterId)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IDGenerator</span>(workerId, datacenterId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> IDGenerator <span class="title function_">createWithMachineId</span><span class="params">(<span class="type">long</span> machineId)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">IDGenerator</span>(machineId &amp; <span class="number">31</span>, machineId &gt;&gt; <span class="number">5</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">nextId</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> snowflake.nextId();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>一台机器多个JVM或者ip地址最后十位相同时会导致机器id重复</p>
+<h4 id="1-3-2-redis维护机器id"><a href="#1-3-2-redis维护机器id" class="headerlink" title="1.3.2 redis维护机器id"></a>1.3.2 redis维护机器id</h4><p>参考<a target="_blank" rel="noopener" href="https://juejin.cn/post/7280747572695679036">失败的面的文章</a></p>
+<p>redis不保证可用性，可能会导致机器id重复</p>
+<h4 id="1-3-3-zookeeper维护机器id"><a href="#1-3-3-zookeeper维护机器id" class="headerlink" title="1.3.3 zookeeper维护机器id"></a>1.3.3 zookeeper维护机器id</h4><p>通过创建分区来监控服务器的状态</p>
+<h1 id="2-数据库自增"><a href="#2-数据库自增" class="headerlink" title="2. 数据库自增"></a>2. 数据库自增</h1><p>在数据库中创建一张表来维护全局唯一的自增id</p>
+<ol>
+<li><p><strong>建表</strong></p>
+<p>数据库表中id可能供多个服务使用，加上<code>type</code>区分使用场景（ 用户表需要自增id，其它表可能也需要），代码实现中可以定义枚举类来记录type</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> `serial_number` (</span><br><span class="line">  `number` <span class="type">bigint</span> <span class="keyword">DEFAULT</span> <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">  `type` <span class="type">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> COMMENT <span class="string">&#x27;自增id类型&#x27;</span>,</span><br><span class="line">  `create_time` datetime(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span>(<span class="number">3</span>),</span><br><span class="line">  `update_time` datetime(<span class="number">3</span>) <span class="keyword">NOT</span> <span class="keyword">NULL</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span>(<span class="number">3</span>) <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">CURRENT_TIMESTAMP</span>(<span class="number">3</span>),</span><br><span class="line">  <span class="keyword">PRIMARY</span> KEY (`type`)</span><br><span class="line">) ENGINE<span class="operator">=</span>InnoDB <span class="keyword">DEFAULT</span> CHARSET<span class="operator">=</span>utf8mb4 <span class="keyword">commit</span> <span class="string">&#x27;全局自增id表&#x27;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>编写代码</strong></p>
+<p>数据库操作</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span></span></span><br><span class="line"><span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;org.example.learn.mapper.SerialNumberMapper&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;BaseResultMap&quot;</span> <span class="attr">type</span>=<span class="string">&quot;org.example.learn.entity.SerialNumber&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">&quot;type&quot;</span> <span class="attr">column</span>=<span class="string">&quot;type&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;VARCHAR&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;number&quot;</span> <span class="attr">column</span>=<span class="string">&quot;number&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;BIGINT&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;createTime&quot;</span> <span class="attr">column</span>=<span class="string">&quot;create_time&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;TIMESTAMP&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">&quot;updateTime&quot;</span> <span class="attr">column</span>=<span class="string">&quot;update_time&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;TIMESTAMP&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getId&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;java.lang.Long&quot;</span>&gt;</span></span><br><span class="line">        select number</span><br><span class="line">        from serial_number</span><br><span class="line">        where type = #&#123;type&#125; FOR UPDATE;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insert&quot;</span> &gt;</span></span><br><span class="line">        insert into serial_number</span><br><span class="line">        ( type,number)</span><br><span class="line">        values (#&#123;type&#125;,#&#123;number&#125;);</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;increment&quot;</span> &gt;</span></span><br><span class="line">        update serial_number</span><br><span class="line">        set number = number + 1</span><br><span class="line">        where type = #&#123;type&#125;;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.learn.mapper;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.annotations.Param;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SerialNumberMapper</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="title function_">insert</span><span class="params">(<span class="meta">@Param(&quot;number&quot;)</span>Long number,<span class="meta">@Param(&quot;type&quot;)</span>String type)</span>;</span><br><span class="line"></span><br><span class="line">    Long <span class="title function_">getId</span><span class="params">(<span class="meta">@Param(&quot;id&quot;)</span> Long id)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="title function_">increment</span><span class="params">(<span class="meta">@Param(&quot;type&quot;)</span>String type)</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>id生成服务</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//id生成的具体逻辑</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="comment">//加事务保证外层事务回滚时，id生成也跟着回滚</span></span><br><span class="line"><span class="meta">@Transactional(propagation = Propagation.REQUIRED)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SerialNumberServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">SerialNumberService</span> &#123;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> SerialNumberMapper serialNumberMapper;</span><br><span class="line">    <span class="keyword">public</span> Long <span class="title function_">getId</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">Long</span> <span class="variable">num</span> <span class="operator">=</span> serialNumberMapper.getId(<span class="string">&quot;test&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span>(num == <span class="literal">null</span>||num == <span class="number">0</span>)&#123;</span><br><span class="line">            serialNumberMapper.insert(<span class="number">1L</span>,<span class="string">&quot;test&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1L</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(serialNumberMapper.increment(<span class="string">&quot;test&quot;</span>)==<span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> num+<span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;data error&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="3-redis生成ID"><a href="#3-redis生成ID" class="headerlink" title="3. redis生成ID"></a>3. redis生成ID</h1><p>可以用redis定义一个Hash类型或者多个key来表示要用的Id，每次使用的时候incr自增就行了。</p>
+<p>Redisson 中有AtmoicLong类型数据可以用作自增id，引用自 <a target="_blank" rel="noopener" href="https://juejin.cn/post/7325642452819673100">修己xj</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SerialIdService</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ID_KEY</span> <span class="operator">=</span> <span class="string">&quot;xiuji:&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">BASE_36</span> <span class="operator">=</span> <span class="number">36</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Integer</span> <span class="variable">SEQUENCE_LENGTH</span> <span class="operator">=</span> <span class="number">5</span>;</span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> RedissonClient redissonClient;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">workSerialId</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">DateTimeFormatter</span> <span class="variable">formatter</span> <span class="operator">=</span> DateTimeFormatter.ofPattern(<span class="string">&quot;yyMM&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">dateStr</span> <span class="operator">=</span> LocalDate.now().format(formatter);</span><br><span class="line">        <span class="comment">//使用了Redisson的AtomicLong对象生成唯一序列号</span></span><br><span class="line">        <span class="type">RAtomicLong</span> <span class="variable">atomicLong</span> <span class="operator">=</span> redissonClient.getAtomicLong(ID_KEY+dateStr);</span><br><span class="line">        <span class="comment">//设置过期时间为35天</span></span><br><span class="line">        <span class="keyword">if</span>(atomicLong.get() == <span class="number">0</span>)&#123;</span><br><span class="line">            atomicLong.expire(Duration.ofDays(<span class="number">35</span>));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//将唯一序列号转换为36进制的字符串，长度为4位，用于减少ID的长度</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">sequenceStr</span> <span class="operator">=</span> Long.toString(atomicLong.incrementAndGet(), BASE_36).toUpperCase();</span><br><span class="line">        <span class="comment">//36进制的序列号若小于4位，则用0补齐高位</span></span><br><span class="line">        <span class="keyword">if</span> (sequenceStr.length() &lt; SEQUENCE_LENGTH) &#123;</span><br><span class="line">            sequenceStr = String.format(<span class="string">&quot;%4s&quot;</span>, sequenceStr).replace(<span class="string">&#x27; &#x27;</span>, <span class="string">&#x27;0&#x27;</span>);;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">String</span> <span class="variable">serialId</span> <span class="operator">=</span> dateStr+sequenceStr;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;生成的工单号：&#123;&#125;&quot;</span>,dateStr+sequenceStr);</span><br><span class="line">        <span class="keyword">return</span> dateStr+sequenceStr;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>问题</strong>：不过redis作为内存数据库，不保证可用性，它的数据不是一定能保证正确存储的。所以id可能会出现重复，这时需要进行一定的处理，比如抛异常，更新redis值等。</p>
+<h1 id="4-其他"><a href="#4-其他" class="headerlink" title="4. 其他"></a>4. 其他</h1><p>ID的生成不拘泥于形式只要能满足业务的需求就行，除了这些常见的id生成策略还可以</p>
+<ul>
+<li><p>UUID生成随机字符串</p>
+</li>
+<li><p>自行拼接<strong>日期</strong>、<strong>随机数</strong>、<strong>业务中值</strong>等内容形成ID</p>
+</li>
+</ul>
+<p>…</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" rel="tag"># 分布式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/08/13/SpringBoot%E5%8F%82%E6%95%B0%E6%A0%A1%E9%AA%8C/" rel="prev" title="SpringBoot参数校验">
+                  <i class="fa fa-angle-left"></i> SpringBoot参数校验
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/09/03/SpringBoot%E6%97%A5%E5%BF%97%E5%9F%BA%E7%A1%80/" rel="next" title="SpringBoot日志基础">
+                  SpringBoot日志基础 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ruizhi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:16</span>
+  </span>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+
+</body>
+</html>

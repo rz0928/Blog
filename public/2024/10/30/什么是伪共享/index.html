@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ruizhihut.top","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="CPU缓存架构 缓存一致性之MESI 伪共享问题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是伪共享?">
+<meta property="og:url" content="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/index.html">
+<meta property="og:site_name" content="ruizhi&#39;s Blog">
+<meta property="og:description" content="CPU缓存架构 缓存一致性之MESI 伪共享问题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/1322310-20200328084130182-1706395900.png">
+<meta property="og:image" content="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/CPU-Cache.png">
+<meta property="og:image" content="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/%7BE3821983-3F11-4D57-AC95-77DDF887886A%7D.png">
+<meta property="og:image" content="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/Diagrama_MESI.gif">
+<meta property="article:published_time" content="2024-10-30T08:34:24.000Z">
+<meta property="article:modified_time" content="2024-11-12T08:44:13.589Z">
+<meta property="article:author" content="ruizhi">
+<meta property="article:tag" content="cpu缓存">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/1322310-20200328084130182-1706395900.png">
+
+
+<link rel="canonical" href="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/","path":"2024/10/30/什么是伪共享/","title":"什么是伪共享?"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>什么是伪共享? | ruizhi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ruizhi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-Cpu%E7%BC%93%E5%AD%98%E6%9E%B6%E6%9E%84"><span class="nav-text">1. Cpu缓存架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-%E7%BC%93%E5%AD%98%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-text">2. 缓存一致性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-mesi%E5%8D%8F%E8%AE%AE"><span class="nav-text">2.1 mesi协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1-%E5%A4%9A%E7%BA%A7%E7%BC%93%E5%AD%98%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-text">2.1.1 多级缓存的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2-%E8%A7%A3%E5%86%B3"><span class="nav-text">2.1.2 解决</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BA%BF%E5%97%85%E6%8E%A2"><span class="nav-text">总线嗅探</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MESI%E5%8D%8F%E8%AE%AE"><span class="nav-text">MESI协议</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-%E8%AF%A6%E7%BB%86%E7%8A%B6%E6%80%81%E6%B5%81%E8%BD%AC%E8%BF%87%E7%A8%8B%E6%8F%8F%E8%BF%B0"><span class="nav-text">2.2.3 详细状态流转过程描述</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-%E4%BC%AA%E5%85%B1%E4%BA%AB%E9%97%AE%E9%A2%98"><span class="nav-text">3. 伪共享问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Disruptor%E4%B8%AD%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-text">3.1 Disruptor中的设计</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ruizhi"
+      src="/images/cat1.jpg">
+  <p class="site-author-name" itemprop="name">ruizhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rz0928" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rz0928" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ruizhi0928@gmail.com" title="E-Mail → mailto:ruizhi0928@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ruizhihut.top/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/cat1.jpg">
+      <meta itemprop="name" content="ruizhi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="什么是伪共享? | ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          什么是伪共享?
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-11-12 16:44:13" itemprop="dateModified" datetime="2024-11-12T16:44:13+08:00">2024-11-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">计算机基础</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>8 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><ul>
+<li>CPU缓存架构</li>
+<li>缓存一致性之MESI</li>
+<li>伪共享问题</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="1-Cpu缓存架构"><a href="#1-Cpu缓存架构" class="headerlink" title="1. Cpu缓存架构"></a>1. Cpu缓存架构</h1><p>计算机存储有着这么一条规律：越靠近CPU的空间访问速度越快，价格也越昂贵。依照这条规律，为了权衡速度与价格，CPU采用金字塔结构的多级缓存。</p>
+<p>从<a target="_blank" rel="noopener" href="https://www.cnblogs.com/binarylei/p/12588928.html">binarylei的博客</a> 扒下来的图</p>
+<p><img src="/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/1322310-20200328084130182-1706395900.png" alt="img"></p>
+<p>​	现代多核CPU缓存结构图如下：</p>
+<p><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/1_hardware/cpu_mesi.html#cpu-cache-%E7%9A%84%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5">小林coding扒下来的图</a></p>
+<img src="/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/CPU-Cache.png" alt="img" style="zoom:50%;">
+
+<p>L1和L2缓存是不同核心之间隔离开的，每个CPU核心都有自己L1和L2缓存。</p>
+<p>linux执行<code>lscpu</code>查看cpu详细，这我的2c4g腾讯云服务器的缓存情况：</p>
+<p><img src="/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/%7BE3821983-3F11-4D57-AC95-77DDF887886A%7D.png" alt="{E3821983-3F11-4D57-AC95-77DDF887886A}"></p>
+<p>**L1 数据缓存 (L1d)**：总共 64 KiB，共有 2 个实例（每个核心有自己的 L1d 缓存）。</p>
+<p>**L1 指令缓存 (L1i)**：总共 64 KiB，共有 2 个实例（每个核心有自己的 L1i 缓存）。</p>
+<p><strong>L2 缓存</strong>：总共 8 MiB，共有 2 个实例（通常是每对物理核心共享一个 L2 缓存）。</p>
+<p><strong>L3 缓存</strong>：总共 35.8 MiB，共有 1 个实例（通常是所有核心共享一个 L3 缓存）。</p>
+<p>（KiB &#x3D; 1024 B 为了与 KB &#x3D; 1000 B区分）</p>
+<p>Cpu缓存是由多个缓存行组成的，缓存行时CPU缓存变化的基本单位（<code>getconf LEVEL1_DCACHE_LINESIZE</code>查看缓存行大小：64B），cache line由<code>tag标记</code>和<code>data block</code>数据块组成。</p>
+<ul>
+<li><code>data block</code>存放数据</li>
+<li><code>tag</code>作用下面细说</li>
+</ul>
+<h1 id="2-缓存一致性"><a href="#2-缓存一致性" class="headerlink" title="2. 缓存一致性"></a>2. 缓存一致性</h1><h2 id="2-1-mesi协议"><a href="#2-1-mesi协议" class="headerlink" title="2.1 mesi协议"></a>2.1 mesi协议</h2><h3 id="2-1-1-多级缓存的问题"><a href="#2-1-1-多级缓存的问题" class="headerlink" title="2.1.1 多级缓存的问题"></a>2.1.1 多级缓存的问题</h3><p>CPU为了提升效率，在写数据时先考虑将数据写入cache line，让缓存需要被替换下去时才会将cache line数据更新到内存中。</p>
+<p>单核环境下，这种先写缓存的方式没有什么问题，但是多核环境下同时操作数据就会导致线程安全问题，要保证不同核心<strong>缓存的一致性</strong>需要两点：</p>
+<ul>
+<li><strong>写传播</strong>：某个CPU核心中的cache更新时，需要把这种状态传播给其他核心的cache</li>
+<li><strong>串行化</strong>：写传播被每个CPU核心接受的顺序需要保持一致。例：写传播消息为 <strong>i &#x3D; 100</strong>和 <strong>i &#x3D; 200</strong>，每个核心都必须先接收到<strong>i &#x3D; 100</strong> 然后再接受 <strong>i &#x3D; 200</strong> 。</li>
+</ul>
+<h3 id="2-1-2-解决"><a href="#2-1-2-解决" class="headerlink" title="2.1.2 解决"></a>2.1.2 解决</h3><h4 id="总线嗅探"><a href="#总线嗅探" class="headerlink" title="总线嗅探"></a>总线嗅探</h4><p>解决缓存一致性问题，只要让每个CPU通过生产消费的方式互相感知就行了。首先CPU每个核心都去监听总线上的信息，充当消费者的角色，当一个CPU核心写了缓存数据时<strong>广播</strong>事件到总线上。</p>
+<p><strong>问题</strong>：</p>
+<ol>
+<li>没有解决上述问题中的串行化</li>
+<li>CPU每个核心上的数据不一定冲突，但是在数据变更时，CPU都会发出广播事件<strong>加重总线负担</strong>。</li>
+</ol>
+<h4 id="MESI协议"><a href="#MESI协议" class="headerlink" title="MESI协议"></a>MESI协议</h4><p>MESI协议基于总线嗅探实现了缓存一致性的解决方案，MESI四个字母表示的是cache line的四个状态（上边的tag这里就需要用到了）。</p>
+<p><strong>状态解释</strong>：</p>
+<ol>
+<li><p><strong>Modified（已修改）</strong>：</p>
+<ul>
+<li><p>在此状态下，缓存行在当前核心中是已修改的，且与主存中的数据不一致。</p>
+</li>
+<li><p>当前核心是该缓存行的唯一拥有者，其他核心的缓存中没有此数据。</p>
+</li>
+<li><p>如果其他核心请求该缓存行，当前核心需要将数据写回主存并将缓存行的状态转为 <strong>Shared</strong> 或 <strong>Invalid</strong>。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>Exclusive（独占）</strong>：</p>
+<ul>
+<li>在此状态下，缓存行在当前核心中与主存一致，且没有其他核心持有该缓存行。</li>
+<li>当当前核心修改该缓存行时，状态转为 <strong>Modified</strong>。</li>
+<li>如果其他核心请求该缓存行，当前核心将其状态改为 <strong>Shared</strong>，并允许其他核心访问。</li>
+</ul>
+</li>
+<li><p><strong>Shared（共享）</strong>：</p>
+<ul>
+<li>在此状态下，缓存行可以存在于多个核心的缓存中，与主存一致。</li>
+<li>如果一个核心希望修改此缓存行，需先发出请求让其他核心将此缓存行置为 <strong>Invalid</strong>，再转入 <strong>Modified</strong> 状态。</li>
+</ul>
+</li>
+<li><p><strong>Invalid（无效）</strong>：</p>
+<ul>
+<li>在此状态下，缓存行数据被认为无效，无法被使用。</li>
+<li>当其他核心修改或请求此缓存行时，当前核心中的缓存行会被置为 <strong>Invalid</strong>。</li>
+</ul>
+</li>
+</ol>
+<p>CPU cache line状态会随着缓存变化在这四个状态中流转。</p>
+<h3 id="2-2-3-详细状态流转过程描述"><a href="#2-2-3-详细状态流转过程描述" class="headerlink" title="2.2.3 详细状态流转过程描述"></a>2.2.3 详细状态流转过程描述</h3><p>处理器对缓存的操作：</p>
+<ol>
+<li>PrRd：处理器请求<strong>读取</strong> Cache 块。</li>
+<li>PrWr：处理器请求<strong>写入</strong> Cache 块</li>
+</ol>
+<p>处理器在<strong>总线</strong>能接收到的相关信号：</p>
+<ol>
+<li>BusRd：监听请求，指示另一个处理器请求的 Cache 块存在<strong>读取</strong>请求</li>
+<li>BusRdX：监听请求，指示另一个<strong>尚未拥有该块</strong>的处理器请求对 Cache 块的<strong>写入</strong>请求。</li>
+<li>BusUpgr：监听请求，指示另一个处理器请求对 Cache 块的写入请求，该处理器已经将该<strong>缓存块驻留在自己的缓存中</strong>。</li>
+<li>Flush：监听请求，指示整个缓存块被另一个处理器写回主内存。</li>
+<li>FlushOpt：监听请求，指示在总线上发布整个 cache 块，以便将其提供给另一个处理器（Cache 到 Cache 传输）。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="center">Initial State 初始状态</th>
+<th align="center">Operation 操作</th>
+<th align="center">Response 响应</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Invalid(I)</td>
+<td align="center">读请求</td>
+<td align="center">向总线发出读请求信号，其他 Cache 看到读请求并检查它们是否有有效的副本，如果其他 Cache 具有有效的副本，则状态转换为 <strong>Shared</strong>； 如果没有，则状态转换为 <strong>Exclusive</strong>（必须确保所有其他核心都已响应）。如果其他 Cache 有 copy，则其中一个 Cache 发送 value，否则从Main Memory获取。</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">写请求</td>
+<td align="center">在总线上发出写请求信号。在请求者 Cache 中将状态转换为<strong>Modified</strong>。如果其他 Cache 有 copy，它们会发送 value，否则从 Main Memory 获取； 如果其他 Cache 具有 copy，则它们会看到BusRdX信号，并使其副本失效。最后块会修改该缓存值完成写请求。</td>
+</tr>
+<tr>
+<td align="center">Exclusive(E)</td>
+<td align="center">读请求</td>
+<td align="center">不生成总线事务，状态保持不变。读取数据块是 Cache Hit（缓存命中）</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">写请求</td>
+<td align="center">不生成总线事务，状态从 <strong>Exclusive</strong> 转换为 <strong>Modified</strong>。写入数据块是 Cache Hit</td>
+</tr>
+<tr>
+<td align="center">Shared(S)</td>
+<td align="center">读请求</td>
+<td align="center">不生成总线事务，状态保持不变。 读取数据块是 Cache Hit。</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">写请求</td>
+<td align="center">在总线上发出 BusUpgr 信号。状态转换为 <strong>Modified</strong>。其他 Cache 看到 BusUpgr 并将其块的副本标记为 Invalid。</td>
+</tr>
+<tr>
+<td align="center">Modified(M)</td>
+<td align="center">读请求</td>
+<td align="center">不生成总线事务，状态保持不变。 读取数据块是缓存命中</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">写请求</td>
+<td align="center">不生成总线事务，状态保持不变。 写入数据块是 Cache 命中。</td>
+</tr>
+</tbody></table>
+<p>维基百科扒下来的状态流转图。</p>
+<p><strong>黑色</strong>：处理者发起的交易。<strong>红色</strong>：总线发起的交易。</p>
+<img src="/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/Diagrama_MESI.gif" alt="undefined" style="zoom:80%;">
+
+<h1 id="3-伪共享问题"><a href="#3-伪共享问题" class="headerlink" title="3. 伪共享问题"></a>3. 伪共享问题</h1><p>根据CPU局部性原理，CPU<strong>以缓存行为基础单位进行数据操作</strong>能一定程度上提升程序执行的效率。但是这也会带来新的问题，想象一个场景，两个核心同时写同一个缓存行的不同变量，那么只会有一个核心能写成功，另一个核心需要等缓存更新后才能进行写操作，但是两个核心写的又是不同的变量理论上来说是可以同时进行的。</p>
+<p>我们把由于多个线程同时访问同一缓存行的不同变量或数据结构的不同部分，导致不必要的缓存一致性流量增加，从而影响性能的现象称为<strong>伪共享</strong>。</p>
+<p><strong>解决方式</strong>：</p>
+<ol>
+<li><p><strong>填充数据</strong>：通过添加填充（padding）数据，将频繁被不同线程访问的变量分隔开，使它们位于不同的缓存行中，避免伪共享。</p>
+</li>
+<li><p><strong>使用<code>@Contended</code>注解</strong>（Java）：在JDK 8及以上版本中，可以通过<code>@Contended</code>注解标记容易产生伪共享的变量，但这需要开启JVM参数。</p>
+<p>启动时加上：<code>-XX:-RestrictContended</code>，jvm会把标注@Contended的变量前后填充数据确保它单独一个缓存行。</p>
+</li>
+</ol>
+<h2 id="3-1-Disruptor中的设计"><a href="#3-1-Disruptor中的设计" class="headerlink" title="3.1 Disruptor中的设计"></a>3.1 Disruptor中的设计</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//左填充7个long类型，一个long类型8个字节，8个占一个缓存行</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">lhsPadding</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="type">long</span> p1,p2,p3,p4,p5,p6,p7;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//需要解决伪共享问题的值</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Value</span> <span class="keyword">extends</span> <span class="title class_">lhsPadding</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">volatile</span> <span class="type">long</span> value;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//右填充7个long类型</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">RhsPadding</span> <span class="keyword">extends</span> <span class="title class_">Value</span>&#123;</span><br><span class="line">    <span class="keyword">protected</span> <span class="type">long</span> p9,p10,p11,p12,p13,p14,p15;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Sequence</span> <span class="keyword">extends</span> <span class="title class_">RhsPadding</span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/cpu%E7%BC%93%E5%AD%98/" rel="tag"># cpu缓存</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/07/%E7%AE%97%E6%B3%95%E5%90%88%E9%9B%86/" rel="prev" title="算法合集(持续更新)">
+                  <i class="fa fa-angle-left"></i> 算法合集(持续更新)
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/" rel="next" title="云服务器崩溃记录">
+                  云服务器崩溃记录 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ruizhi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:16</span>
+  </span>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+
+</body>
+</html>

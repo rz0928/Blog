@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous"></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ruizhihut.top","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="云服务器内存不足导致崩溃记录。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云服务器崩溃记录">
+<meta property="og:url" content="https://ruizhihut.top/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="ruizhi&#39;s Blog">
+<meta property="og:description" content="云服务器内存不足导致崩溃记录。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ruizhihut.top/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/%7B49F6E50B-F55F-4274-9180-3F7D010D0243%7D.png">
+<meta property="article:published_time" content="2024-11-04T07:04:16.000Z">
+<meta property="article:modified_time" content="2024-11-27T02:23:16.595Z">
+<meta property="article:author" content="ruizhi">
+<meta property="article:tag" content="杂记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ruizhihut.top/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/%7B49F6E50B-F55F-4274-9180-3F7D010D0243%7D.png">
+
+
+<link rel="canonical" href="https://ruizhihut.top/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ruizhihut.top/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/","path":"2024/11/04/云服务器崩溃记录/","title":"云服务器崩溃记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>云服务器崩溃记录 | ruizhi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">ruizhi's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">10</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">4</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">12</span></a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="ruizhi"
+      src="/images/cat1.jpg">
+  <p class="site-author-name" itemprop="name">ruizhi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/rz0928" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;rz0928" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:ruizhi0928@gmail.com" title="E-Mail → mailto:ruizhi0928@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ruizhihut.top/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/cat1.jpg">
+      <meta itemprop="name" content="ruizhi">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="云服务器崩溃记录 | ruizhi's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云服务器崩溃记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-11-27 10:23:16" itemprop="dateModified" datetime="2024-11-27T10:23:16+08:00">2024-11-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" itemprop="url" rel="index"><span itemprop="name">云服务器</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>云服务器内存不足导致崩溃记录。</p>
+<span id="more"></span>
+
+<ol>
+<li><p><strong>问题出现</strong></p>
+<p>之前将ES和canal相关服务跑在2c4g的京东云云服务器上，今天xshell连接查看时执行命令突然就卡住了，访问kibana也无响应，原本以为只是偶然发生，但是再我重启服务器后继续时又崩溃了。</p>
+</li>
+<li><p><strong>排查原因</strong></p>
+<p>想到服务器跑着ES，第一时间我就去看了下内存，果然内存严重不足，云服务器监控面板的内存监控已经显示不出数据了。重启后第一时间就执行<code>free -h</code>观察内存使用情况，发现空闲内存不足100M，且没有swap交换区。那这时问题就变得简单起来了，加个swap交换区就行了（防崩溃手段，不过磁盘io会严重影响性能，线上场景一般考虑ES分片逐步迁移数据）。</p>
+</li>
+<li><p><strong>解决</strong></p>
+<ol>
+<li><p>禁用现有swap分区</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo swapoff -a</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建swap文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">dd</span> <span class="keyword">if</span>=/dev/zero of=/swapfile bs=1M count=2048</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>sudo</code>：使用超级用户权限运行命令，以确保能够创建swap文件和更改系统设置。</p>
+</li>
+<li><p><code>dd</code>：一个Linux命令，用于按字节复制数据，可以用来创建、备份文件或分区。这里用来创建swap文件。</p>
+</li>
+<li><p><code>if=/dev/zero</code>：指定输入文件（<code>if</code> &#x3D; input file）。<code>/dev/zero</code> 是一个虚拟文件，能够不断地生成空字节（0），所以这里可以将<code>/dev/zero</code>理解为一个数据源，提供连续的空字节数据来填充文件。</p>
+</li>
+<li><p><code>of=/swapfile</code>：指定输出文件（<code>of</code> &#x3D; output file）。这里是将生成的数据写入到<code>/swapfile</code>，也就是我们将要创建的swap文件。</p>
+</li>
+<li><p><code>bs=1M</code>：指定每次写入的“块大小”（block size）为1MB。<code>dd</code>命令会每次从<code>/dev/zero</code>中读取1MB的数据，然后写入到<code>/swapfile</code>中。</p>
+</li>
+<li><p><code>count=2048</code>：指定要写入多少个“块”。<code>count=2048</code>表示写入2048个1MB的块。这样，文件的总大小就是 <code>1M * 2048 = 2048MB</code>，也就是2GB。</p>
+</li>
+</ul>
+<p><strong>swap大小设置</strong>：</p>
+<ul>
+<li>4G以内的物理内存，SWAP 设置为内存的2倍。</li>
+<li>4-8G的物理内存，SWAP 等于内存大小。</li>
+<li>8-64G 的物理内存，SWAP 设置为8G。</li>
+<li>64-256G物理内存，SWAP 设置为16G。</li>
+</ul>
+<p>实际上，系统中交换分区的大小并不取决于物理内存的量，而是取决于系统中内存的负荷，所以在安装系统时要根据具体的业务来设置SWAP的值。一般Linux桌面系统的SWAP设置的会相对大一点，而Linux服务器，特别是生产环境，SWAP可能只有一点点，1-2G，很多甚至都没有SWAP（swap使用时会影响性能，具体原因自行查阅）。</p>
+</li>
+<li><p>配置swap文件权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#只有root有权限访问</span></span><br><span class="line">sudo <span class="built_in">chmod</span> 600 /swapfile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将文件格式化为swap格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mkswap /swapfile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启用新的swap文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo swapon /swapfile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置开机自动挂载</p>
+<p>为了在服务器重启时自动启用swap，可以将该swap文件添加到<code>/etc/fstab</code>中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;/swapfile none swap sw 0 0&#x27;</span> | sudo <span class="built_in">tee</span> -a /etc/fstab</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>调整swappiness值</p>
+<p><code>swappiness</code>控制内存使用的策略。可以通过设置<code>swappiness</code>值来控制swap的使用情况：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo sysctl vm.swappiness=10</span><br><span class="line"><span class="comment">#保存到配置文件中</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;vm.swappiness=10&#x27;</span> | sudo <span class="built_in">tee</span> -a /etc/sysctl.conf</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>swappiness</code> 的取值范围</strong></p>
+<ul>
+<li><code>swappiness</code> 的取值范围是 <strong>0-100</strong>，表示系统在物理内存与swap之间的平衡。</li>
+<li>取值越低，表示系统更倾向于优先使用物理内存，尽可能减少对swap的依赖。</li>
+<li>取值越高，表示系统更早地开始使用swap，即使物理内存还没有完全用完。</li>
+</ul>
+<p> <strong>常用的 <code>swappiness</code> 设置</strong></p>
+<ul>
+<li><strong>0</strong>：表示除非物理内存完全用完，否则不会使用swap。可以将swappiness设置为0的系统几乎不使用swap，更加依赖物理内存，适合对延迟敏感的服务（如数据库）。</li>
+<li><strong>10-20</strong>：常用于服务器，表示只有在物理内存接近用尽时才会使用swap，这样可以降低硬盘I&#x2F;O、保持系统响应速度。</li>
+<li><strong>60</strong>（默认值）：Linux系统的默认值，意味着内存和swap使用会相对均衡。即使内存充足，系统也会在某些情况下使用swap。</li>
+<li><strong>100</strong>：表示系统会尽可能频繁地使用swap，即使物理内存还充足。这种设置很少使用，因为会导致不必要的硬盘I&#x2F;O并影响性能。</li>
+</ul>
+</li>
+</ol>
+<p>执行<code>free -h</code>查看内存情况</p>
+<p><img src="/2024/11/04/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%B4%A9%E6%BA%83%E8%AE%B0%E5%BD%95/%7B49F6E50B-F55F-4274-9180-3F7D010D0243%7D.png" alt="{49F6E50B-F55F-4274-9180-3F7D010D0243}"></p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9D%82%E8%AE%B0/" rel="tag"># 杂记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/10/30/%E4%BB%80%E4%B9%88%E6%98%AF%E4%BC%AA%E5%85%B1%E4%BA%AB/" rel="prev" title="什么是伪共享?">
+                  <i class="fa fa-angle-left"></i> 什么是伪共享?
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">ruizhi</span>
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">37k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2:16</span>
+  </span>
+</div>
+<!--
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+-->
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  <script src="/js/third-party/pace.js"></script>
+
+
+  
+
+
+
+
+
+</body>
+</html>

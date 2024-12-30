@@ -666,7 +666,7 @@ private static final class PackageImports {
 
 2. 导入自己编写的Bean
    - `@AutoConfigurationPackage`上标注了`@Import(AutoConfigurationPackages.Registrar.class)`
-   - 根据模块装配规则``AutoConfigurationPackages.Registrar`实现了`ImportBeanDefinitionRegistrar`接口，重写了`registerBeanDefinitions()`方法。
+   - 根据模块装配规则`AutoConfigurationPackages.Registrar`实现了`ImportBeanDefinitionRegistrar`接口，重写了`registerBeanDefinitions()`方法。
    - `registerBeanDefinitions()`会调用`register()`方法来注册`PackageImports`中封装的包名
    - `PackageImports`会解析是否配置需要扫描的包名，默认是启动类所在包
 
